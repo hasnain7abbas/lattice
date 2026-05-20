@@ -54,7 +54,7 @@
 
 <img src="docs/images/hero.png" alt="Lattice — animated crystal structure explorer" width="100%"/>
 
-> _Screenshot placeholder — drop a render into `docs/images/hero.png` to populate this hero._
+
 
 </div>
 
