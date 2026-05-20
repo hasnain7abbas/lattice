@@ -146,7 +146,7 @@ More land with every release. Open an [issue](https://github.com/hasnain7abbas/l
 | <img src="docs/images/desktop.png" alt="Desktop view" width="100%"/> | <img src="docs/images/mobile.png" alt="Mobile view" width="50%"/> |
 | _The morph scrubber transitioning BCC → FCC_ | _Sidebar collapsed into a drawer_ |
 
-> _Drop your screenshots into `docs/images/` — names above are pre-wired._
+
 
 </div>
 
