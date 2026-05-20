@@ -2,28 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* NextChat-inspired tokens. Light is default; .dark on <html> flips. */
 :root {
-  --bg: #0a0a0c;
-  --bg-elevated: #14141a;
-  --bg-panel: rgba(20, 20, 26, 0.72);
-  --border: rgba(255, 255, 255, 0.08);
-  --fg: #f4f4f6;
-  --fg-muted: #9696a3;
-  --fg-subtle: #5a5a66;
-  --accent: #7df9ff;
-  --accent-glow: rgba(125, 249, 255, 0.4);
-  --plane: #ff7ab6;
-  --direction: #ffd166;
-  --bond-highlight: #b8f561;
-  --error: #ff6b6b;
+  --white: #ffffff;
+  --black: rgb(48, 48, 48);
+  --gray: rgb(250, 250, 250);
+  --primary: rgb(29, 147, 171);
+  --primary-strong: rgb(22, 119, 138);
+  --primary-soft: rgba(29, 147, 171, 0.14);
+  --second: rgb(231, 248, 255);
+  --hover-color: #f3f3f3;
+  --bar-color: rgba(0, 0, 0, 0.1);
+  --border-in-light: 1px solid rgb(222, 222, 222);
+  --shadow: 50px 50px 100px 10px rgb(0 0 0 / 10%);
+  --card-shadow: 0px 2px 4px 0px rgb(0 0 0 / 5%);
+
+  --window-width: 90vw;
+  --window-height: 90vh;
+  --sidebar-width: 300px;
+  --window-content-width: calc(100% - var(--sidebar-width));
+  --full-height: 100%;
+
+  /* Lattice scene canvas background gradient */
+  --canvas-bg: radial-gradient(ellipse at 50% 40%, #f0fafd 0%, #e3f3f9 100%);
+}
+
+html.dark {
+  --white: rgb(30, 30, 30);
+  --black: rgb(220, 220, 220);
+  --gray: rgb(21, 21, 21);
+  --primary: rgb(48, 178, 204);
+  --primary-strong: rgb(125, 226, 246);
+  --primary-soft: rgba(48, 178, 204, 0.18);
+  --second: rgb(27, 38, 42);
+  --hover-color: #2a2a30;
+  --bar-color: rgba(255, 255, 255, 0.1);
+  --border-in-light: 1px solid rgba(255, 255, 255, 0.12);
+  --shadow: 50px 50px 100px 10px rgb(0 0 0 / 35%);
+  --card-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+  --canvas-bg: radial-gradient(ellipse at 50% 40%, #15171b 0%, #0a0b0e 70%);
+}
+
+@media (max-width: 600px) {
+  :root {
+    --window-width: 100vw;
+    --window-height: 100%;
+    --sidebar-width: 86vw;
+    --window-content-width: var(--window-width);
+    --window-radius: 0px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    color-scheme: dark;
+  }
 }
 
 html, body, #root {
   height: 100%;
   margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: "Inter", system-ui, sans-serif;
+  background: var(--gray);
+  color: var(--black);
+  font-family: "Noto Sans", "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow: hidden;
@@ -34,50 +75,59 @@ button {
   font-family: inherit;
 }
 
-.panel {
-  background: var(--bg-panel);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-}
-
 .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 .serif { font-family: "Instrument Serif", Georgia, serif; }
 
-.dotted-term {
-  border-bottom: 1px dotted var(--fg-subtle);
-  cursor: help;
+/* NextChat-style scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
+::-webkit-scrollbar-track { background-color: transparent; }
+::-webkit-scrollbar-thumb {
+  background-color: var(--bar-color);
+  border-radius: 20px;
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 
-/* Custom range slider */
+canvas { touch-action: none; }
+
+/* Range slider */
 .scrub {
   -webkit-appearance: none;
   appearance: none;
   height: 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bar-color);
   border-radius: 999px;
   outline: none;
 }
 .scrub::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent-glow);
+  background: var(--primary);
   cursor: grab;
-  border: 2px solid #0a0a0c;
+  border: 2px solid var(--white);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 }
 .scrub::-webkit-slider-thumb:active { cursor: grabbing; }
 .scrub::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid #0a0a0c;
+  background: var(--primary);
+  border: 2px solid var(--white);
   cursor: grab;
+}
+
+@keyframes slide-in {
+  0% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -7,7 +7,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "android:prepare": "cargo fetch --manifest-path ./src-tauri/Cargo.toml",
+    "android:init": "tauri android init",
+    "android:dev": "tauri android dev",
+    "android:build": "tauri android build",
+    "android:apk": "tauri android build --apk",
+    "android:signing": "node ./scripts/setup-android-signing.mjs",
+    "doctor": "node ./scripts/doctor.mjs",
+    "bootstrap": "node ./scripts/bootstrap.mjs"
   },
   "dependencies": {
     "@react-spring/three": "^9.7.5",

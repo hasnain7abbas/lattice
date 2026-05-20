@@ -1,23 +1,31 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
-        serif: ["Instrument Serif", "Georgia", "serif"],
+        sans: ['"Noto Sans"', "Inter", "system-ui", "sans-serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        serif: ['"Instrument Serif"', "Georgia", "serif"],
       },
       colors: {
-        bg: "var(--bg)",
-        "bg-elevated": "var(--bg-elevated)",
-        "bg-panel": "var(--bg-panel)",
-        fg: "var(--fg)",
-        "fg-muted": "var(--fg-muted)",
-        "fg-subtle": "var(--fg-subtle)",
-        accent: "var(--accent)",
-        plane: "var(--plane)",
-        direction: "var(--direction)",
+        white: "var(--white)",
+        black: "var(--black)",
+        gray: "var(--gray)",
+        primary: "var(--primary)",
+        "primary-strong": "var(--primary-strong)",
+        "primary-soft": "var(--primary-soft)",
+        second: "var(--second)",
+        hover: "var(--hover-color)",
+      },
+      borderRadius: {
+        chat: "20px",
+        card: "10px",
+      },
+      boxShadow: {
+        nextchat: "var(--shadow)",
+        card: "var(--card-shadow)",
       },
     },
   },

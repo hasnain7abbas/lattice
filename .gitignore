@@ -15,3 +15,7 @@ vite.config.d.ts
 # Tauri / Rust build cache — installers are copied to /dist-installers and committed separately
 src-tauri/target
 src-tauri/gen
+src-tauri/Cargo.lock
+
+# Build logs
+*.log

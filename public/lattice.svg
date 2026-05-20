@@ -1,22 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
-  <rect width="80" height="80" fill="#0a0a0c"/>
-  <g stroke="#7df9ff" stroke-width="1" opacity="0.5">
-    <line x1="40" y1="14" x2="14" y2="56"/>
-    <line x1="40" y1="14" x2="66" y2="56"/>
-    <line x1="14" y1="56" x2="66" y2="56"/>
-    <line x1="40" y1="40" x2="27" y2="32"/>
-    <line x1="40" y1="40" x2="53" y2="32"/>
-    <line x1="40" y1="40" x2="27" y2="50"/>
-    <line x1="40" y1="40" x2="53" y2="50"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <radialGradient id="atomGrad" cx="0.35" cy="0.35" r="0.7">
+      <stop offset="0%" stop-color="#b5fbff"/>
+      <stop offset="55%" stop-color="#1d93ab"/>
+      <stop offset="100%" stop-color="#0d5663"/>
+    </radialGradient>
+    <linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d93ab" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#1d93ab" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Axonometric simple-cubic unit cell.
+       8 corners projected from a 3D cube. -->
+  <!--
+    Back face corners (further from viewer): drawn first, dimmer
+      A = back-bottom-left  (24, 78)
+      B = back-bottom-right (84, 78)
+      C = back-top-right    (84, 18)
+      D = back-top-left     (24, 18)
+    Front face corners:
+      E = front-bottom-left  (44, 110)
+      F = front-bottom-right (104, 110)
+      G = front-top-right    (104, 50)
+      H = front-top-left     (44, 50)
+  -->
+
+  <!-- Back edges first (dimmer / behind) -->
+  <g stroke="url(#edgeGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.55">
+    <line x1="24" y1="78" x2="84" y2="78"/>
+    <line x1="84" y1="78" x2="84" y2="18"/>
+    <line x1="84" y1="18" x2="24" y2="18"/>
+    <line x1="24" y1="18" x2="24" y2="78"/>
   </g>
-  <g fill="#7df9ff">
-    <circle cx="40" cy="14" r="4"/>
-    <circle cx="14" cy="56" r="4"/>
-    <circle cx="66" cy="56" r="4"/>
-    <circle cx="40" cy="40" r="4"/>
-    <circle cx="27" cy="32" r="3"/>
-    <circle cx="53" cy="32" r="3"/>
-    <circle cx="27" cy="50" r="3"/>
-    <circle cx="53" cy="50" r="3"/>
+
+  <!-- Depth edges connecting back to front -->
+  <g stroke="url(#edgeGrad)" stroke-width="2.8" stroke-linecap="round" opacity="0.85">
+    <line x1="24" y1="78" x2="44" y2="110"/>
+    <line x1="84" y1="78" x2="104" y2="110"/>
+    <line x1="84" y1="18" x2="104" y2="50"/>
+    <line x1="24" y1="18" x2="44" y2="50"/>
+  </g>
+
+  <!-- Front edges (brightest) -->
+  <g stroke="#1d93ab" stroke-width="3" stroke-linecap="round">
+    <line x1="44" y1="110" x2="104" y2="110"/>
+    <line x1="104" y1="110" x2="104" y2="50"/>
+    <line x1="104" y1="50" x2="44" y2="50"/>
+    <line x1="44" y1="50" x2="44" y2="110"/>
+  </g>
+
+  <!-- Back atoms (dimmer) -->
+  <g opacity="0.85">
+    <circle cx="24" cy="78" r="7" fill="url(#atomGrad)"/>
+    <circle cx="84" cy="78" r="7" fill="url(#atomGrad)"/>
+    <circle cx="84" cy="18" r="7" fill="url(#atomGrad)"/>
+    <circle cx="24" cy="18" r="7" fill="url(#atomGrad)"/>
+  </g>
+
+  <!-- Front atoms (brighter, slightly larger) -->
+  <g>
+    <circle cx="44"  cy="110" r="8.5" fill="url(#atomGrad)"/>
+    <circle cx="104" cy="110" r="8.5" fill="url(#atomGrad)"/>
+    <circle cx="104" cy="50"  r="8.5" fill="url(#atomGrad)"/>
+    <circle cx="44"  cy="50"  r="8.5" fill="url(#atomGrad)"/>
   </g>
 </svg>

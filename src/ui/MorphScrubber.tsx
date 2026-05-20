@@ -9,16 +9,14 @@ export function MorphScrubber() {
   const morph = useScene((s) => s.morph);
   const setMorph = useScene((s) => s.setMorph);
 
-  // Auto-advance the morph after a structure switch.
   useEffect(() => {
     if (!previousId || morph >= 1) return;
     let raf = 0;
     const start = performance.now();
     const from = morph;
-    const duration = 1400; // ms
+    const duration = 1400;
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
-      // Ease-in-out cubic
       const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       setMorph(from + (1 - from) * eased);
       if (t < 1) raf = requestAnimationFrame(tick);
@@ -35,15 +33,27 @@ export function MorphScrubber() {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ y: 30, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 30, opacity: 0 }}
-        className="absolute bottom-24 left-1/2 -translate-x-1/2 panel px-5 py-4 w-[420px] max-w-[92vw] pointer-events-auto"
+        exit={{ y: 20, opacity: 0 }}
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 px-5 py-3 w-[420px] max-w-[92%] rounded-card border"
+        style={{
+          background: "var(--white)",
+          borderColor: "var(--border-in-light)" as any,
+          borderWidth: 1,
+          borderStyle: "solid",
+          boxShadow: "var(--card-shadow)",
+        }}
       >
-        <div className="flex justify-between text-[10px] mono uppercase tracking-widest text-fg-muted mb-2">
-          <span>{prev.name}</span>
-          <span className="text-accent">scrub the transformation</span>
-          <span>{cur.name}</span>
+        <div
+          className="flex justify-between text-[10px] mono uppercase tracking-widest mb-2"
+          style={{ color: "var(--black)", opacity: 0.6 }}
+        >
+          <span className="truncate max-w-[35%]">{prev.name}</span>
+          <span style={{ color: "var(--primary)", opacity: 1 }} className="hidden sm:inline">
+            scrub
+          </span>
+          <span className="truncate max-w-[35%] text-right">{cur.name}</span>
         </div>
         <input
           type="range"
