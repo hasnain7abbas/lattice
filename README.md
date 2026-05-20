@@ -1,99 +1,181 @@
 <div align="center">
 
-<img src="src-tauri/icons/128x128@2x.png" width="128" alt="Lattice logo"/>
+<a href="https://hasnain7abbas.github.io/lattice/">
+  <img src="src-tauri/icons/128x128@2x.png" width="160" alt="Lattice"/>
+</a>
 
 <h1 align="center">Lattice</h1>
 
-Crystal structures, animated. An animation-first solid-state physics explorer for desktop and mobile.
+<p align="center">
+  <b>✨ Crystal structures, animated.</b><br/>
+  An animation-first solid-state physics explorer — desktop, mobile and web.
+</p>
 
+[![Web Demo][Web-image]][demo-url]
 [![Windows][Windows-image]][download-url]
 [![Android][Android-image]][download-url]
+[![Release][Release-image]][release-url]
+[![License][License-image]](#-license)
+
 [![Tauri][Tauri-image]][tauri-url]
 [![React][React-image]][react-url]
 [![Three.js][Three-image]][three-url]
+[![TypeScript][TS-image]][ts-url]
+[![Vite][Vite-image]][vite-url]
+[![Tailwind][Tailwind-image]][tailwind-url]
 
-[Download][download-url] · [Features](#-features) · [Crystals](#-included-crystals) · [Build from source](#-build-from-source) · [Roadmap](#-roadmap)
+[**🌐 Try the Web Demo**][demo-url] · [**📥 Download**][download-url] · [**📖 Docs**](#-get-started) · [**🗺 Roadmap**](#-roadmap) · [**⭐ Star**][star-url]
 
+[demo-url]: https://hasnain7abbas.github.io/lattice/
 [download-url]: https://github.com/hasnain7abbas/lattice/releases/latest
+[release-url]: https://github.com/hasnain7abbas/lattice/releases
+[star-url]: https://github.com/hasnain7abbas/lattice/stargazers
 [tauri-url]: https://tauri.app
 [react-url]: https://react.dev
 [three-url]: https://threejs.org
-[Windows-image]: https://img.shields.io/badge/-Windows-0078D4?logo=windows&logoColor=white
-[Android-image]: https://img.shields.io/badge/-Android-3DDC84?logo=android&logoColor=white
+[ts-url]: https://www.typescriptlang.org
+[vite-url]: https://vitejs.dev
+[tailwind-url]: https://tailwindcss.com
+
+[Web-image]: https://img.shields.io/badge/🌐_Web_Demo-Live-22c55e?style=for-the-badge
+[Windows-image]: https://img.shields.io/badge/Windows-Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white
+[Android-image]: https://img.shields.io/badge/Android-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white
+[Release-image]: https://img.shields.io/github/v/release/hasnain7abbas/lattice?style=for-the-badge&color=8b5cf6
+[License-image]: https://img.shields.io/badge/License-MIT-eab308?style=for-the-badge
+
 [Tauri-image]: https://img.shields.io/badge/Tauri-2.x-FFC131?logo=tauri&logoColor=black
 [React-image]: https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black
 [Three-image]: https://img.shields.io/badge/Three.js-r169-000000?logo=three.js&logoColor=white
+[TS-image]: https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white
+[Vite-image]: https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white
+[Tailwind-image]: https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white
+
+---
+
+<img src="docs/images/hero.png" alt="Lattice — animated crystal structure explorer" width="100%"/>
+
+> _Screenshot placeholder — drop a render into `docs/images/hero.png` to populate this hero._
 
 </div>
 
-## Lattice
+## 🪞 Why Lattice
 
-Lattice is a desktop and mobile app for exploring crystal structures through motion. Switch between BCC, FCC, diamond, rock salt and more — scrub through transitions, inspect Miller planes, and learn solid-state physics the way it actually behaves: in three dimensions, animated.
+Most solid-state physics tools throw a static diagram at you and expect you to mentally rotate a cube of dots. **Lattice doesn't.** Every structure renders as a live 3D scene, and the morph scrubber lets you literally drag through the transition from BCC to FCC to diamond to NaCl — watching atoms slide into place. Built native with Tauri 2, so the desktop installer is **~3 MB**, not a 200 MB Electron blob.
 
-Built with Tauri 2, React 18 and Three.js. Native binaries for Windows and Android — small footprint, no Electron.
+## 🚀 Try It Right Now
 
-## 📥 Download
+<table>
+<tr>
+<td align="center" width="33%">
 
-Grab the latest release from the [Releases page](https://github.com/hasnain7abbas/lattice/releases/latest):
+### 🌐 Web
+**No install. Just open.**
 
-| Platform | File | Size |
-| --- | --- | --- |
-| Windows (installer) | `Lattice_0.1.0_x64-setup.exe` | ~2.3 MB |
-| Windows (MSI) | `Lattice_0.1.0_x64_en-US.msi` | ~3.3 MB |
-| Windows (portable) | `Lattice.exe` | ~9.3 MB |
-| Android (arm64) | `Lattice_0.1.0_arm64-debug.apk` | ~16 MB |
+[![Open Web Demo](https://img.shields.io/badge/▶_Open-Web_Demo-22c55e?style=for-the-badge)][demo-url]
 
-> The Android build is a debug-signed APK — enable "Install unknown apps" for your file manager to side-load it.
+Runs in any modern browser.
+
+</td>
+<td align="center" width="33%">
+
+### 🖥 Desktop
+**Native Windows app.**
+
+[![Download Installer](https://img.shields.io/badge/⬇_Download-Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white)][download-url]
+
+~2.3 MB installer. No Electron.
+
+</td>
+<td align="center" width="33%">
+
+### 📱 Mobile
+**Android APK.**
+
+[![Download APK](https://img.shields.io/badge/⬇_Download-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)][download-url]
+
+arm64, side-loadable.
+
+</td>
+</tr>
+</table>
+
+## 📥 Downloads
+
+All builds live on the [Releases page][download-url]. Latest is **v0.1.0**.
+
+| Platform | File | Size | Notes |
+| :--- | :--- | :---: | :--- |
+| 🪟 Windows (installer) | `Lattice_0.1.0_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
+| 🪟 Windows (MSI) | `Lattice_0.1.0_x64_en-US.msi` | 3.3 MB | For managed deployments |
+| 🪟 Windows (portable) | `Lattice.exe` | 9.3 MB | No installer, just run |
+| 🤖 Android (arm64) | `Lattice_0.1.0_arm64-debug.apk` | 16 MB | Debug-signed — enable "Install unknown apps" |
+| 🍎 macOS / 🐧 Linux | _coming soon_ | — | Build locally with `npm run tauri build` |
 
 ## ✨ Features
 
-- **Animated crystal lattice viewer** — every structure renders as a live 3D scene, not a static diagram
-- **Morph scrubber** — drag between two structures to see the atomic rearrangement in real time
-- **10 built-in presets** spanning metals, covalent and ionic solids (see below)
-- **Miller plane overlay** — visualise (hkl) planes against the unit cell
-- **Element-aware colouring** sourced from a built-in periodic table dataset
-- **Dark, NextChat-inspired UI** with a responsive sidebar that collapses to a mobile drawer
-- **Native cross-platform** — single Tauri codebase, ~3 MB Windows installer, native Android APK
-- **Offline-first** — no network calls, no telemetry, nothing leaves your machine
+- 🎞 **Animated lattice viewer** — every structure is a live 3D scene, not a static diagram
+- 🌀 **Morph scrubber** — drag between two structures, watch atoms rearrange in real time
+- 🧪 **10 built-in presets** — metals, covalent, ionic, compound solids
+- 📐 **Miller plane overlay** — visualise `(hkl)` planes against the unit cell
+- 🎨 **Element-aware colouring** from a built-in periodic-table dataset
+- 🌑 **NextChat-inspired dark UI** — responsive sidebar collapses to a mobile drawer
+- 📦 **Native, tiny** — Tauri 2, ~3 MB Windows installer, native Android APK
+- 🔌 **Offline-first** — zero network calls, zero telemetry, zero accounts
+- 🌐 **Runs anywhere** — same React+Three.js codebase ships to Web, Windows and Android
 
-## 🔬 Included crystals
+## 🔬 Included Crystals
 
-| Family | Structures |
-| --- | --- |
-| Metals (BCC) | Iron (α-Fe) |
-| Metals (FCC) | Iron (γ-Fe), Copper, Gold |
-| Simple cubic | Polonium-style reference cell |
-| Covalent | Diamond |
-| Ionic | Rock Salt (NaCl), Cesium Chloride (CsCl) |
-| Compound | Zincblende (ZnS), Fluorite (CaF₂) |
+<table>
+<tr><th>Family</th><th>Structures</th></tr>
+<tr><td>🟦 BCC metals</td><td>Iron (α-Fe)</td></tr>
+<tr><td>🟩 FCC metals</td><td>Iron (γ-Fe), Copper, Gold</td></tr>
+<tr><td>⬜ Simple cubic</td><td>Reference cell</td></tr>
+<tr><td>💎 Covalent</td><td>Diamond</td></tr>
+<tr><td>🧂 Ionic</td><td>Rock Salt (NaCl), Cesium Chloride (CsCl)</td></tr>
+<tr><td>⚗️ Compound</td><td>Zincblende (ZnS), Fluorite (CaF₂)</td></tr>
+</table>
 
-More presets land with each release — open an issue if there's a structure you want next.
+More land with every release. Open an [issue](https://github.com/hasnain7abbas/lattice/issues) if there's a structure you want next.
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/images/desktop.png" alt="Desktop view" width="100%"/> | <img src="docs/images/mobile.png" alt="Mobile view" width="50%"/> |
+| _The morph scrubber transitioning BCC → FCC_ | _Sidebar collapsed into a drawer_ |
+
+> _Drop your screenshots into `docs/images/` — names above are pre-wired._
+
+</div>
 
 ## 🚀 Get Started
 
-1. Download the installer for your platform from the [Releases page][download-url]
-2. Run it. On Windows, the NSIS `*-setup.exe` is the smallest and recommended; the `.msi` is for managed deployments
-3. Launch **Lattice** — the sidebar lists every preset, click one to render
-4. Use the **morph scrubber** at the bottom to transition between two structures
+1. **Try the [web demo][demo-url]** to see if you like it — no install needed
+2. **Download** the installer for your platform from the [Releases page][download-url]
+3. **Launch Lattice** — the sidebar lists every preset; click one to render
+4. **Drag the morph scrubber** at the bottom to transition between two structures
 
-No accounts, no API keys, no sign-in. It just runs.
+No accounts. No API keys. No sign-in. It just runs.
 
-## 🛠 Build from source
-
-Requirements:
-- [Node.js 20+](https://nodejs.org/)
-- [Rust](https://rustup.rs/) (stable)
-- Platform toolchain: MSVC build tools (Windows) / Android SDK + NDK (mobile)
+## 🛠 Build From Source
 
 ```bash
 git clone https://github.com/hasnain7abbas/lattice.git
 cd lattice
 npm install
-npm run tauri dev      # desktop, hot reload
-npm run tauri build    # desktop installers → src-tauri/target/release/bundle
+
+npm run tauri dev       # desktop, hot reload
+npm run tauri build     # desktop installers → src-tauri/target/release/bundle
+npm run dev             # browser-only dev server (no Tauri)
+npm run build           # static web bundle → dist/
 ```
 
-### Android
+**Requirements:** [Node 20+](https://nodejs.org) · [Rust stable](https://rustup.rs) · MSVC build tools (Win) or Android SDK+NDK (mobile)
+
+<details>
+<summary><b>📱 Android build instructions</b></summary>
 
 ```bash
 npm run android:prepare
@@ -102,11 +184,45 @@ npm run android:dev         # connect a device or start an emulator
 npm run android:apk         # → src-tauri/gen/android/app/build/outputs/apk
 ```
 
-For release signing, see `scripts/setup-android-signing.mjs` and run `npm run android:signing`.
+For release signing: see `scripts/setup-android-signing.mjs` and run `npm run android:signing`.
 
-### Doctor
+</details>
 
-If something looks off, run `npm run doctor` — it checks Node/Rust/Tauri/Android toolchain versions and prints what's missing.
+<details>
+<summary><b>🩺 Doctor — verify your toolchain</b></summary>
+
+```bash
+npm run doctor
+```
+
+Checks Node/Rust/Tauri/Android versions and prints what's missing.
+
+</details>
+
+## 🏗 Architecture
+
+```
+src/
+├── app/        # top-level app shell
+├── scene/      # Three.js / R3F viewport, effects, primitives
+├── ui/         # sidebar, drawer, scrubber, window chrome
+├── data/       # crystal presets + periodic-table data
+├── stores/     # Zustand state
+└── styles/     # Tailwind + globals
+src-tauri/      # Rust backend, Tauri config, native bundles
+.github/
+└── workflows/  # GitHub Pages deploy
+```
+
+| Layer | Stack |
+| :--- | :--- |
+| 🐚 Shell | Tauri 2 (Rust + WebView2 / Android WebView) |
+| ⚛️ Frontend | React 18 + TypeScript + Vite |
+| 🎲 3D | Three.js r169 · @react-three/fiber · drei · postprocessing |
+| 🗃 State | Zustand |
+| 💫 Motion | Framer Motion · @react-spring/three |
+| 🎨 Style | Tailwind CSS |
+| 🔣 Icons | lucide-react |
 
 ## 🗺 Roadmap
 
@@ -115,55 +231,43 @@ If something looks off, run `npm run doctor` — it checks Node/Rust/Tauri/Andro
 - [x] Compound structures (ZnS, CaF₂)
 - [x] Morph scrubber between presets
 - [x] Mobile-responsive UI
-- [x] Windows installers (NSIS + MSI)
+- [x] Windows installers (NSIS + MSI + portable)
 - [x] Android APK
-- [ ] Miller plane editor (custom hkl input)
+- [x] Web demo on GitHub Pages
+- [ ] Miller plane editor (custom `hkl` input)
 - [ ] HCP family (Mg, Zn, Ti)
 - [ ] Perovskite (CaTiO₃) and spinel structures
 - [ ] iOS build via `tauri ios`
-- [ ] macOS + Linux installers in CI
-- [ ] Signed release-mode Android APK on the Play Store
+- [ ] macOS + Linux installers via CI
+- [ ] Signed release-mode APK on the Play Store
 - [ ] User-defined unit cells (paste a CIF)
 
-## 📰 What's new
+## 📰 What's New
 
-- **v0.1.0** — first public release. Windows installers (NSIS, MSI, portable), Android debug APK, 10 built-in crystal presets, mobile-responsive NextChat-style UI, simple-cubic logo.
-
-## 🏗 Architecture
-
-```
-src/
-├── app/        # top-level app shell + routing
-├── scene/      # Three.js / R3F viewport, effects, primitives
-├── ui/         # sidebar, drawer, scrubber, window chrome
-├── data/       # crystal presets + periodic-table data
-├── stores/     # Zustand state
-└── styles/     # Tailwind config
-src-tauri/      # Rust backend, Tauri config, native bundles
-```
-
-| Layer | Stack |
-| --- | --- |
-| Shell | Tauri 2 (Rust + WebView2 / Android WebView) |
-| Frontend | React 18, TypeScript, Vite |
-| 3D | Three.js r169, @react-three/fiber, @react-three/drei, postprocessing |
-| State | Zustand |
-| Motion | Framer Motion, @react-spring/three |
-| Style | Tailwind CSS |
-| Icons | lucide-react |
+- 🌐 **Web demo** — same app, now runs in the browser via GitHub Pages
+- 🚀 **v0.1.0** — first public release. Windows installers, Android APK, 10 crystal presets, mobile-responsive NextChat-style UI, simple-cubic logo
 
 ## 🤝 Contributing
 
-Issues and pull requests welcome. If you're adding a new crystal preset, drop it into `src/data/presets.ts` and the sidebar will pick it up automatically.
+Issues and PRs welcome. Adding a new crystal? Drop it into `src/data/presets.ts` — the sidebar picks it up automatically.
+
+## ⭐ Show Some Love
+
+If Lattice helped you visualise something you couldn't before, a ⭐ on the [repo][star-url] is the best thank-you.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hasnain7abbas/lattice&type=Date)](https://star-history.com/#hasnain7abbas/lattice&Date)
 
 ## 📄 License
 
-Source under the MIT License. Bundled font, icon and dataset assets retain their original licenses — see the individual files for details.
+[MIT](LICENSE) — do whatever you want, just don't blame me. Bundled fonts, icons and datasets retain their original licenses.
 
 ---
 
 <div align="center">
 
-Built with [Tauri](https://tauri.app), [React](https://react.dev) and [Three.js](https://threejs.org).
+Made with 🦀 Rust, ⚛️ React and 🎲 Three.js.<br/>
+Powered by [Tauri](https://tauri.app).
+
+<sub>If you build something cool with this, [tell me](https://github.com/hasnain7abbas/lattice/issues/new) — I love seeing it.</sub>
 
 </div>
