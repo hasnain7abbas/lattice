@@ -101,20 +101,22 @@ arm64, side-loadable.
 
 ## 📥 Downloads
 
-All builds live on the [Releases page][download-url]. Latest is **v0.1.0**.
+All builds live on the [Releases page][download-url]. Latest is **v0.2.0**.
 
 | Platform | File | Size | Notes |
 | :--- | :--- | :---: | :--- |
-| 🪟 Windows (installer) | `Lattice_0.1.0_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
-| 🪟 Windows (MSI) | `Lattice_0.1.0_x64_en-US.msi` | 3.3 MB | For managed deployments |
+| 🪟 Windows (installer) | `Lattice_0.2.0_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
+| 🪟 Windows (MSI) | `Lattice_0.2.0_x64_en-US.msi` | 3.3 MB | For managed deployments |
 | 🪟 Windows (portable) | `Lattice.exe` | 9.3 MB | No installer, just run |
-| 🤖 Android (arm64) | `Lattice_0.1.0_arm64-debug.apk` | 16 MB | Debug-signed — enable "Install unknown apps" |
+| 🤖 Android (arm64) | `Lattice_0.2.0_arm64-release.apk` | 12 MB | Release build — enable "Install unknown apps" to side-load |
 | 🍎 macOS / 🐧 Linux | _coming soon_ | — | Build locally with `npm run tauri build` |
 
 ## ✨ Features
 
 - 🎞 **Animated lattice viewer** — every structure is a live 3D scene, not a static diagram
 - 🌀 **Morph scrubber** — drag between two structures, watch atoms rearrange in real time
+- 🔳 **All lattice sites toggle** — render an atom at every equivalent site of the unit cell (all 8 corners, 6 face centers, etc.), so an FCC/BCC cube looks visually complete
+- 📱 **Mobile-tuned UI** — compact header on small screens, larger touch targets, safe-area-aware drawer + scrubber, dynamic viewport height (`dvh`) so the Android URL bar doesn't clip the canvas
 - 🧪 **10 built-in presets** — metals, covalent, ionic, compound solids
 - 📐 **Miller plane overlay** — visualise `(hkl)` planes against the unit cell
 - 🎨 **Element-aware colouring** from a built-in periodic-table dataset
@@ -184,6 +186,8 @@ npm run android:dev         # connect a device or start an emulator
 npm run android:apk         # → src-tauri/gen/android/app/build/outputs/apk
 ```
 
+**Windows note:** Tauri's APK build pipeline tries to create a symlink from the cross-compiled `.so` into the Gradle `jniLibs` folder. Windows refuses this without Developer Mode. To work around that without elevating, this repo ships `scripts/android-rust-shim.mjs` (wired in via the `tauri` npm script) — it runs Tauri's `android-studio-script` for the real cargo step, then copies the resulting `.so` into `jniLibs` with a plain file copy. Standard usage (`npm run tauri build`, `npm run tauri dev`, etc.) is unaffected; the shim only intervenes on the Android Studio script path.
+
 For release signing: see `scripts/setup-android-signing.mjs` and run `npm run android:signing`.
 
 </details>
@@ -244,6 +248,7 @@ src-tauri/      # Rust backend, Tauri config, native bundles
 
 ## 📰 What's New
 
+- 🚀 **v0.2.0** — mobile UI overhaul. New "All lattice sites" toggle (renders every equivalent corner/face atom of a unit cell), compact toolbar on phones, safe-area-aware drawer + scrubber, dynamic viewport height so the Android URL bar can't clip the 3D canvas. Release-signed Android APK + refreshed Windows installers.
 - 🌐 **Web demo** — same app, now runs in the browser via GitHub Pages
 - 🚀 **v0.1.0** — first public release. Windows installers, Android APK, 10 crystal presets, mobile-responsive NextChat-style UI, simple-cubic logo
 

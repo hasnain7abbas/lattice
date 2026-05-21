@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useScene } from "../stores/useScene";
 import { getPreset } from "../data/presets";
 import { paramsToVectors } from "../lib/crystal/lattice";
-import { X, Layers3, Sparkles, Box } from "lucide-react";
+import { X, Layers3, Sparkles, Box, Grid3x3 } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -59,8 +59,10 @@ function DrawerBody() {
   const setSupercell = useScene((s) => s.setSupercell);
   const showCell = useScene((s) => s.showCell);
   const showBonds = useScene((s) => s.showBonds);
+  const showAllSites = useScene((s) => s.showAllSites);
   const toggleCell = useScene((s) => s.toggleCell);
   const toggleBonds = useScene((s) => s.toggleBonds);
+  const toggleAllSites = useScene((s) => s.toggleAllSites);
   const cur = getPreset(currentId);
   const L = paramsToVectors(cur.params);
   const det =
@@ -103,9 +105,32 @@ function DrawerBody() {
       </Section>
 
       <Section icon={<Box size={13} />} label="Display">
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-2">
           <Toggle on={showCell} onClick={toggleCell} label="Cell" />
           <Toggle on={showBonds} onClick={toggleBonds} label="Bonds" />
+        </div>
+        <button
+          onClick={toggleAllSites}
+          className="w-full h-10 rounded-card text-xs font-medium transition-colors border flex items-center justify-center gap-2 px-2"
+          style={{
+            background: showAllSites ? "var(--primary-soft)" : "var(--white)",
+            color: showAllSites ? "var(--primary)" : "var(--black)",
+            borderColor: (showAllSites ? "var(--primary)" : "var(--border-in-light)") as any,
+            borderWidth: 1,
+            borderStyle: "solid",
+          }}
+          title="Draw an atom at every equivalent lattice site (8 corners, face centers, etc.)"
+        >
+          <Grid3x3 size={13} />
+          All lattice sites
+        </button>
+        <div
+          className="text-[10px] mt-1.5 leading-snug opacity-60"
+          style={{ color: "var(--black)" }}
+        >
+          {showAllSites
+            ? "Drawing atoms at every cell corner / face mirror."
+            : "Showing just the primitive basis (no boundary mirrors)."}
         </div>
       </Section>
     </>

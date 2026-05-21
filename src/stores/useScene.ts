@@ -13,6 +13,9 @@ type SceneState = {
   showCell: boolean;
   /** Show bonds */
   showBonds: boolean;
+  /** Mirror atoms across every equivalent lattice site of the unit cell
+   *  (e.g. all 8 corners of a cube, both ends of edges/faces). */
+  showAllSites: boolean;
   /** Selected atom key */
   selected: string | null;
   /** Tap target during transitions, exposed for HUD */
@@ -22,6 +25,7 @@ type SceneState = {
   setSupercell: (n: [number, number, number]) => void;
   toggleCell: () => void;
   toggleBonds: () => void;
+  toggleAllSites: () => void;
   select: (key: string | null) => void;
 };
 
@@ -33,6 +37,7 @@ export const useScene = create<SceneState>()(
     supercell: [1, 1, 1],
     showCell: true,
     showBonds: true,
+    showAllSites: true,
     selected: null,
     morphing: false,
     setStructure: (id) => {
@@ -44,6 +49,7 @@ export const useScene = create<SceneState>()(
     setSupercell: (n) => set({ supercell: n }),
     toggleCell: () => set((s) => ({ showCell: !s.showCell })),
     toggleBonds: () => set((s) => ({ showBonds: !s.showBonds })),
+    toggleAllSites: () => set((s) => ({ showAllSites: !s.showAllSites })),
     select: (key) => set({ selected: key }),
   })),
 );

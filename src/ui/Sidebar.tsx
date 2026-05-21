@@ -34,8 +34,8 @@ export function Sidebar({ onOpenSettings, mobileOpen, onMobileClose }: Props) {
       </AnimatePresence>
 
       <aside
-        className={`flex flex-col p-5 bg-second border-r border-black/5 dark:border-white/10
-          fixed sm:relative inset-y-0 left-0 z-40 transition-transform
+        className={`flex flex-col p-4 sm:p-5 bg-second border-r border-black/5 dark:border-white/10
+          fixed sm:relative inset-y-0 left-0 z-40 transition-transform safe-top safe-bottom
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
         style={{
           width: "var(--sidebar-width)",
@@ -158,7 +158,7 @@ export function Sidebar({ onOpenSettings, mobileOpen, onMobileClose }: Props) {
 
         {/* Footer */}
         <div className="pt-4 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[11px] opacity-60">
-          <span className="mono">v0.1.0</span>
+          <span className="mono">v0.2.0</span>
           <a
             href="https://github.com/hasnain7abbas/lattice"
             target="_blank"

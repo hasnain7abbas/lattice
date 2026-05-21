@@ -46,12 +46,28 @@ html.dark {
 @media (max-width: 600px) {
   :root {
     --window-width: 100vw;
-    --window-height: 100%;
-    --sidebar-width: 86vw;
+    --window-height: 100dvh;
+    --sidebar-width: min(82vw, 320px);
     --window-content-width: var(--window-width);
     --window-radius: 0px;
+    --shadow: none;
+  }
+  html, body, #root {
+    height: 100dvh;
+    overscroll-behavior: none;
   }
 }
+
+/* Tighten the scrub thumb on coarse pointers — easier to grab without dwarfing the bar. */
+@media (pointer: coarse) {
+  .scrub { height: 8px; }
+  .scrub::-webkit-slider-thumb { width: 26px; height: 26px; }
+  .scrub::-moz-range-thumb { width: 26px; height: 26px; }
+}
+
+/* Allow safe-area padding for notched/Android phones. */
+.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0px); }
+.safe-top { padding-top: env(safe-area-inset-top, 0px); }
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) {

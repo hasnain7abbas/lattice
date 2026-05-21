@@ -15,6 +15,7 @@ export function CrystalScene() {
   const supercell = useScene((s) => s.supercell);
   const showCell = useScene((s) => s.showCell);
   const showBonds = useScene((s) => s.showBonds);
+  const showAllSites = useScene((s) => s.showAllSites);
   const selected = useScene((s) => s.selected);
   const select = useScene((s) => s.select);
 
@@ -28,7 +29,10 @@ export function CrystalScene() {
   }, [currentId, previousId, morph]);
 
   const lattice = useMemo(() => getLatticeVectors(structure), [structure]);
-  const atoms = useMemo(() => buildSupercell(structure, supercell), [structure, supercell]);
+  const atoms = useMemo(
+    () => buildSupercell(structure, supercell, showAllSites),
+    [structure, supercell, showAllSites],
+  );
 
   // Center the whole scene so it sits at origin.
   const center: Vec3 = useMemo(() => {

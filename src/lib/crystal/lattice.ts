@@ -29,25 +29,81 @@ export function getLatticeVectors(s: Structure): LatticeVectors {
   return s.lattice ?? paramsToVectors(s.params);
 }
 
-export function buildSupercell(s: Structure, n: [number, number, number]): Atom[] {
+export function buildSupercell(
+  s: Structure,
+  n: [number, number, number],
+  showAllSites = false,
+): Atom[] {
   const L = getLatticeVectors(s);
   const out: Atom[] = [];
+  const seen = new Set<string>();
+  const eps = 1e-6;
+
+  const push = (element: string, f: Vec3, key: string) => {
+    const k = `${f[0].toFixed(4)}|${f[1].toFixed(4)}|${f[2].toFixed(4)}|${element}`;
+    if (seen.has(k)) return;
+    seen.add(k);
+    out.push({ element, frac: f, position: fracToCart(f, L), key });
+  };
+
   for (let i = 0; i < n[0]; i++) {
     for (let j = 0; j < n[1]; j++) {
       for (let k = 0; k < n[2]; k++) {
         for (let bi = 0; bi < s.basis.length; bi++) {
           const ba: BasisAtom = s.basis[bi];
           const f: Vec3 = [ba.frac[0] + i, ba.frac[1] + j, ba.frac[2] + k];
-          out.push({
-            element: ba.element,
-            frac: f,
-            position: fracToCart(f, L),
-            key: `${bi}-${i}-${j}-${k}`,
-          });
+          push(ba.element, f, `${bi}-${i}-${j}-${k}`);
         }
       }
     }
   }
+
+  if (showAllSites) {
+    // For any basis atom that sits on a cell face/edge/corner (a 0 in some
+    // fractional component), draw its translational copies on the opposite
+    // boundary of the whole supercell. This is what makes an FCC/BCC/SC
+    // unit cell look "complete" — 8 corners, 6 face centers, etc.
+    for (let bi = 0; bi < s.basis.length; bi++) {
+      const ba = s.basis[bi];
+      const lo = [
+        Math.abs(ba.frac[0]) < eps,
+        Math.abs(ba.frac[1]) < eps,
+        Math.abs(ba.frac[2]) < eps,
+      ];
+      const offsets: Vec3[] = [];
+      for (let dx = 0; dx <= (lo[0] ? 1 : 0); dx++) {
+        for (let dy = 0; dy <= (lo[1] ? 1 : 0); dy++) {
+          for (let dz = 0; dz <= (lo[2] ? 1 : 0); dz++) {
+            if (dx === 0 && dy === 0 && dz === 0) continue;
+            offsets.push([dx * n[0], dy * n[1], dz * n[2]]);
+          }
+        }
+      }
+      if (offsets.length === 0) continue;
+      // For each existing cell that already places this atom on the relevant
+      // low face, project a mirror copy to the matching high face.
+      for (let i = 0; i < n[0]; i++) {
+        for (let j = 0; j < n[1]; j++) {
+          for (let k = 0; k < n[2]; k++) {
+            for (const o of offsets) {
+              // Only mirror when the source atom actually sits on the low
+              // boundary of the supercell along the mirrored axes.
+              if (o[0] > 0 && i !== 0) continue;
+              if (o[1] > 0 && j !== 0) continue;
+              if (o[2] > 0 && k !== 0) continue;
+              const f: Vec3 = [
+                ba.frac[0] + i + o[0],
+                ba.frac[1] + j + o[1],
+                ba.frac[2] + k + o[2],
+              ];
+              push(ba.element, f, `${bi}-${i}-${j}-${k}-img${o[0]}${o[1]}${o[2]}`);
+            }
+          }
+        }
+      }
+    }
+  }
+
   return out;
 }
 

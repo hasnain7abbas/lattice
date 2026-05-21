@@ -16,7 +16,7 @@ export function App() {
       style={{ background: "var(--gray)" }}
     >
       <div
-        className="overflow-hidden flex relative"
+        className="overflow-hidden flex relative max-sm:!border-0 max-sm:!shadow-none"
         style={{
           width: "var(--window-width)",
           height: "var(--window-height)",

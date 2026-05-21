@@ -18,7 +18,7 @@ export function Viewport() {
         shadows={!isMobile}
         dpr={isMobile ? [1, 1.5] : [1, 2]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        camera={{ position: isMobile ? [7, 6, 10] : [6, 5, 8], fov: isMobile ? 42 : 38, near: 0.1, far: 200 }}
+        camera={{ position: isMobile ? [5.5, 5, 8] : [6, 5, 8], fov: isMobile ? 46 : 38, near: 0.1, far: 200 }}
       >
         <ambientLight intensity={isDark ? 0.18 : 0.35} />
         <directionalLight

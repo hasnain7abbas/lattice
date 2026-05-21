@@ -1,4 +1,4 @@
-import { Menu, RotateCcw, Eye, EyeOff } from "lucide-react";
+import { Menu, RotateCcw, Eye, EyeOff, Grid3x3 } from "lucide-react";
 import { useScene } from "../stores/useScene";
 import { getPreset } from "../data/presets";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,8 +13,10 @@ export function WindowHeader({ onOpenSidebar }: Props) {
   const morph = useScene((s) => s.morph);
   const showCell = useScene((s) => s.showCell);
   const showBonds = useScene((s) => s.showBonds);
+  const showAllSites = useScene((s) => s.showAllSites);
   const toggleCell = useScene((s) => s.toggleCell);
   const toggleBonds = useScene((s) => s.toggleBonds);
+  const toggleAllSites = useScene((s) => s.toggleAllSites);
   const setStructure = useScene((s) => s.setStructure);
   const cur = getPreset(currentId);
   const prev = previousId ? getPreset(previousId) : null;
@@ -22,7 +24,7 @@ export function WindowHeader({ onOpenSidebar }: Props) {
 
   return (
     <header
-      className="flex items-center justify-between px-4 sm:px-6 h-[60px] border-b shrink-0"
+      className="flex items-center justify-between px-3 sm:px-6 h-[52px] sm:h-[60px] border-b shrink-0"
       style={{
         borderColor: "var(--border-in-light)" as any,
         borderBottomWidth: 1,
@@ -72,24 +74,34 @@ export function WindowHeader({ onOpenSidebar }: Props) {
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
         <ToolbarButton
           on={showCell}
           onClick={toggleCell}
           icon={showCell ? <Eye size={14} /> : <EyeOff size={14} />}
           label="Cell"
+          title="Toggle unit-cell wireframe"
+        />
+        <ToolbarButton
+          on={showAllSites}
+          onClick={toggleAllSites}
+          icon={<Grid3x3 size={14} />}
+          label="Sites"
+          title="Atoms at every equivalent lattice site"
         />
         <ToolbarButton
           on={showBonds}
           onClick={toggleBonds}
           icon={null}
           label="Bonds"
+          title="Toggle bonds"
         />
         <button
           onClick={() => setStructure(cur.id)}
           className="p-2 rounded-card text-xs flex items-center gap-1.5 transition-colors"
           style={{ color: "var(--black)", opacity: 0.7 }}
           title="Reset view"
+          aria-label="Reset view"
         >
           <RotateCcw size={14} />
         </button>
@@ -103,16 +115,21 @@ function ToolbarButton({
   onClick,
   icon,
   label,
+  title,
 }: {
   on: boolean;
   onClick: () => void;
   icon: React.ReactNode;
   label: string;
+  title?: string;
 }) {
   return (
     <button
       onClick={onClick}
-      className="h-8 px-2.5 rounded-card text-xs font-medium flex items-center gap-1.5 transition-colors border"
+      title={title ?? label}
+      aria-label={label}
+      aria-pressed={on}
+      className="h-8 px-2 sm:px-2.5 rounded-card text-xs font-medium flex items-center gap-1.5 transition-colors border min-w-[34px] justify-center"
       style={{
         background: on ? "var(--primary-soft)" : "var(--white)",
         color: on ? "var(--primary)" : "var(--black)",
