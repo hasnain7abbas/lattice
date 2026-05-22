@@ -11,7 +11,7 @@ type Props = {
   radius?: number;
 };
 
-export function Bond({ a, b, elementA, elementB, radius = 0.06 }: Props) {
+export function Bond({ a, b, elementA, elementB, radius = 0.035 }: Props) {
   const { mid, length, quat, midPoint, mid2 } = useMemo(() => {
     const av = new THREE.Vector3(...a);
     const bv = new THREE.Vector3(...b);
@@ -33,11 +33,11 @@ export function Bond({ a, b, elementA, elementB, radius = 0.06 }: Props) {
     <group>
       <mesh position={midPoint} quaternion={quat}>
         <cylinderGeometry args={[radius, radius, half, 16, 1, true]} />
-        <meshStandardMaterial color={colA} roughness={0.45} metalness={0.05} />
+        <meshStandardMaterial color={colA} roughness={0.55} metalness={0.15} />
       </mesh>
       <mesh position={mid2} quaternion={quat}>
         <cylinderGeometry args={[radius, radius, half, 16, 1, true]} />
-        <meshStandardMaterial color={colB} roughness={0.45} metalness={0.05} />
+        <meshStandardMaterial color={colB} roughness={0.55} metalness={0.15} />
       </mesh>
       {/* invisible debug node consuming mid to satisfy ts */}
       <group position={mid} visible={false} />

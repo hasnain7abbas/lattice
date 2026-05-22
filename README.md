@@ -101,14 +101,14 @@ arm64, side-loadable.
 
 ## 📥 Downloads
 
-All builds live on the [Releases page][download-url]. Latest is **v0.2.0**.
+All builds live on the [Releases page][download-url]. Latest is **v0.2.1**.
 
 | Platform | File | Size | Notes |
 | :--- | :--- | :---: | :--- |
-| 🪟 Windows (installer) | `Lattice_0.2.0_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
-| 🪟 Windows (MSI) | `Lattice_0.2.0_x64_en-US.msi` | 3.3 MB | For managed deployments |
+| 🪟 Windows (installer) | `Lattice_0.2.1_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
+| 🪟 Windows (MSI) | `Lattice_0.2.1_x64_en-US.msi` | 3.3 MB | For managed deployments |
 | 🪟 Windows (portable) | `Lattice.exe` | 9.3 MB | No installer, just run |
-| 🤖 Android (arm64) | `Lattice_0.2.0_arm64-release.apk` | 12 MB | Release build — enable "Install unknown apps" to side-load |
+| 🤖 Android (arm64) | `Lattice_0.2.1_arm64-release.apk` | 12 MB | Release build — enable "Install unknown apps" to side-load |
 | 🍎 macOS / 🐧 Linux | _coming soon_ | — | Build locally with `npm run tauri build` |
 
 ## ✨ Features
@@ -248,6 +248,7 @@ src-tauri/      # Rust backend, Tauri config, native bundles
 
 ## 📰 What's New
 
+- 🚀 **v0.2.1** — visual polish + mobile scrubber fix. Atoms now ship with glossy clearcoat highlights and a soft additive rim halo (no more flat-coloured balls), bonds are ~40% thinner so the lattice geometry reads cleanly, and the morph scrubber no longer slides off-screen on phones (Framer Motion's transform was clobbering the centering translate).
 - 🚀 **v0.2.0** — mobile UI overhaul. New "All lattice sites" toggle (renders every equivalent corner/face atom of a unit cell), compact toolbar on phones, safe-area-aware drawer + scrubber, dynamic viewport height so the Android URL bar can't clip the 3D canvas. Release-signed Android APK + refreshed Windows installers.
 - 🌐 **Web demo** — same app, now runs in the browser via GitHub Pages
 - 🚀 **v0.1.0** — first public release. Windows installers, Android APK, 10 crystal presets, mobile-responsive NextChat-style UI, simple-cubic logo

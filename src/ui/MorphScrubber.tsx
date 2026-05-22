@@ -33,10 +33,10 @@ export function MorphScrubber() {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 20, opacity: 0 }}
-        className="absolute bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 px-4 sm:px-5 py-3 w-[420px] max-w-[calc(100%-24px)] rounded-card border safe-bottom"
+        initial={{ x: "-50%", y: 20, opacity: 0 }}
+        animate={{ x: "-50%", y: 0, opacity: 1 }}
+        exit={{ x: "-50%", y: 20, opacity: 0 }}
+        className="absolute bottom-4 sm:bottom-5 left-1/2 z-20 px-4 sm:px-5 py-3 w-[420px] max-w-[calc(100vw-24px)] sm:max-w-[calc(100%-24px)] rounded-card border safe-bottom"
         style={{
           background: "var(--white)",
           borderColor: "var(--border-in-light)" as any,

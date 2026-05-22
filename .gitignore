@@ -19,3 +19,8 @@ src-tauri/Cargo.lock
 
 # Build logs
 *.log
+
+# Android signing secrets — never commit these
+signing/
+*.keystore
+*.jks

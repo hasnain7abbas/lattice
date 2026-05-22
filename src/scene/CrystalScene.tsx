@@ -83,7 +83,7 @@ export function CrystalScene() {
         />
       ))}
       {bonds.map((b, i) => (
-        <Bond key={i} a={b.a} b={b.b} elementA={b.ea} elementB={b.eb} radius={Math.min(0.07, getElement(b.ea).radius * 0.18)} />
+        <Bond key={i} a={b.a} b={b.b} elementA={b.ea} elementB={b.eb} radius={Math.min(0.042, getElement(b.ea).radius * 0.11)} />
       ))}
     </group>
   );
