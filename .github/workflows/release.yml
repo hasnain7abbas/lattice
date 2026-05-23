@@ -1,0 +1,158 @@
+name: Release
+
+# Builds Windows installers + Android APK and attaches them to a GitHub
+# Release when you push a tag like `v0.2.3`. Trigger manually with
+# workflow_dispatch to dry-run against the latest commit (no release published).
+#
+# Required secrets for the Android job (set in repo Settings → Secrets):
+#   ANDROID_KEYSTORE_BASE64   base64 of your release.keystore
+#                             (`base64 -w0 signing/release.keystore`)
+#   ANDROID_STORE_PASSWORD    keystore password
+#   ANDROID_KEY_ALIAS         key alias (e.g. "release")
+#   ANDROID_KEY_PASSWORD      key password (often same as store password)
+#
+# If you don't want signed Android builds in CI, delete the build-android
+# job and drop its needs reference from the release job.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - name: Build Tauri Windows bundles
+        run: npm run tauri:cli -- build
+
+      - name: Stage artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Copy-Item src-tauri/target/release/bundle/nsis/*-setup.exe artifacts/
+          Copy-Item src-tauri/target/release/bundle/msi/*.msi artifacts/
+          Copy-Item src-tauri/target/release/lattice.exe artifacts/Lattice.exe
+          Get-ChildItem artifacts
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: artifacts/*
+
+  build-android:
+    runs-on: ubuntu-latest
+    env:
+      NDK_VERSION: "26.1.10909125"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK + NDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-34 build-tools;34.0.0 ndk;${{ env.NDK_VERSION }}"
+
+      - name: Export NDK_HOME
+        run: |
+          echo "NDK_HOME=$ANDROID_HOME/ndk/$NDK_VERSION" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/$NDK_VERSION" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/$NDK_VERSION" >> $GITHUB_ENV
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - name: Decode keystore + write keystore.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Missing ANDROID_KEYSTORE_BASE64 secret — see workflow header for setup."
+            exit 1
+          fi
+          mkdir -p signing
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > signing/release.keystore
+          mkdir -p src-tauri/gen/android
+          cat > src-tauri/gen/android/keystore.properties <<EOF
+          storeFile=../../../../signing/release.keystore
+          storePassword=$ANDROID_STORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+
+      - name: Build Android arm64 release APK
+        run: npm run android:apk
+
+      - name: Stage APK with versioned filename
+        run: |
+          mkdir -p artifacts
+          VERSION=$(node -p "require('./package.json').version")
+          APK=$(find src-tauri/gen/android/app/build/outputs/apk -name "*arm64*release*.apk" | head -n1)
+          if [ -z "$APK" ]; then
+            echo "::error::No arm64 release APK found"
+            find src-tauri/gen/android/app/build/outputs -type f
+            exit 1
+          fi
+          cp "$APK" "artifacts/Lattice_${VERSION}_arm64-release.apk"
+          ls -la artifacts/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: artifacts/*
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-windows, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - run: ls -la artifacts/
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
+          draft: true
+          fail_on_unmatched_files: true
