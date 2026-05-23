@@ -96,6 +96,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Initialize Android project (gen/android is gitignored)
+        run: npm run android:init
+
       - name: Decode keystore + write keystore.properties
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
