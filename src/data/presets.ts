@@ -4,6 +4,13 @@ const cubic = (a: number) => ({ a, b: a, c: a, alpha: 90, beta: 90, gamma: 90 })
 
 export const PRESETS: Structure[] = [
   {
+    id: "sc-po",
+    name: "Simple Cubic",
+    blurb: "The simplest 3D lattice. Rare in nature — α-Po is the textbook case.",
+    params: cubic(3.36),
+    basis: [{ element: "C", frac: [0, 0, 0] }],
+  },
+  {
     id: "bcc-fe",
     name: "BCC Iron",
     blurb: "α-iron — body-centered cubic. Stable below 912 °C.",
@@ -11,18 +18,6 @@ export const PRESETS: Structure[] = [
     basis: [
       { element: "Fe", frac: [0, 0, 0] },
       { element: "Fe", frac: [0.5, 0.5, 0.5] },
-    ],
-  },
-  {
-    id: "fcc-fe",
-    name: "FCC Iron",
-    blurb: "γ-iron — face-centered cubic. The high-temperature phase.",
-    params: cubic(3.65),
-    basis: [
-      { element: "Fe", frac: [0, 0, 0] },
-      { element: "Fe", frac: [0.5, 0.5, 0] },
-      { element: "Fe", frac: [0.5, 0, 0.5] },
-      { element: "Fe", frac: [0, 0.5, 0.5] },
     ],
   },
   {
@@ -38,23 +33,16 @@ export const PRESETS: Structure[] = [
     ],
   },
   {
-    id: "fcc-au",
-    name: "FCC Gold",
-    blurb: "Gold — FCC, brilliantly soft, brilliantly conductive.",
-    params: cubic(4.08),
+    id: "fcc-al",
+    name: "FCC Aluminum",
+    blurb: "Lightweight FCC metal — same packing as Cu, very different chemistry.",
+    params: cubic(4.046),
     basis: [
-      { element: "Au", frac: [0, 0, 0] },
-      { element: "Au", frac: [0.5, 0.5, 0] },
-      { element: "Au", frac: [0.5, 0, 0.5] },
-      { element: "Au", frac: [0, 0.5, 0.5] },
+      { element: "Al", frac: [0, 0, 0] },
+      { element: "Al", frac: [0.5, 0.5, 0] },
+      { element: "Al", frac: [0.5, 0, 0.5] },
+      { element: "Al", frac: [0, 0.5, 0.5] },
     ],
-  },
-  {
-    id: "sc-po",
-    name: "Simple Cubic",
-    blurb: "The simplest 3D lattice. Rare in nature — α-Po is the textbook case.",
-    params: cubic(3.36),
-    basis: [{ element: "C", frac: [0, 0, 0] }],
   },
   {
     id: "diamond",
@@ -70,6 +58,22 @@ export const PRESETS: Structure[] = [
       { element: "C", frac: [0.75, 0.75, 0.25] },
       { element: "C", frac: [0.75, 0.25, 0.75] },
       { element: "C", frac: [0.25, 0.75, 0.75] },
+    ],
+  },
+  {
+    id: "silicon",
+    name: "Silicon",
+    blurb: "Diamond-cubic Si — the structure behind every modern chip.",
+    params: cubic(5.431),
+    basis: [
+      { element: "Si", frac: [0, 0, 0] },
+      { element: "Si", frac: [0.5, 0.5, 0] },
+      { element: "Si", frac: [0.5, 0, 0.5] },
+      { element: "Si", frac: [0, 0.5, 0.5] },
+      { element: "Si", frac: [0.25, 0.25, 0.25] },
+      { element: "Si", frac: [0.75, 0.75, 0.25] },
+      { element: "Si", frac: [0.75, 0.25, 0.75] },
+      { element: "Si", frac: [0.25, 0.75, 0.75] },
     ],
   },
   {
@@ -115,6 +119,22 @@ export const PRESETS: Structure[] = [
     ],
   },
   {
+    id: "gaas",
+    name: "Gallium Arsenide",
+    blurb: "Zincblende GaAs — the workhorse III–V semiconductor for lasers and HEMTs.",
+    params: cubic(5.653),
+    basis: [
+      { element: "Ga", frac: [0, 0, 0] },
+      { element: "Ga", frac: [0.5, 0.5, 0] },
+      { element: "Ga", frac: [0.5, 0, 0.5] },
+      { element: "Ga", frac: [0, 0.5, 0.5] },
+      { element: "As", frac: [0.25, 0.25, 0.25] },
+      { element: "As", frac: [0.75, 0.75, 0.25] },
+      { element: "As", frac: [0.75, 0.25, 0.75] },
+      { element: "As", frac: [0.25, 0.75, 0.75] },
+    ],
+  },
+  {
     id: "fluorite",
     name: "Fluorite (CaF₂)",
     blurb: "Ca²⁺ on FCC sites, F⁻ filling every tetrahedral hole.",
@@ -132,6 +152,19 @@ export const PRESETS: Structure[] = [
       { element: "F" as any, frac: [0.75, 0.25, 0.75] },
       { element: "F" as any, frac: [0.25, 0.75, 0.75] },
       { element: "F" as any, frac: [0.75, 0.75, 0.75] },
+    ],
+  },
+  {
+    id: "perovskite-srtio3",
+    name: "Perovskite (SrTiO₃)",
+    blurb: "Sr at corners, Ti at body center, O on faces — the canonical ABO₃ perovskite.",
+    params: cubic(3.905),
+    basis: [
+      { element: "Sr", frac: [0, 0, 0] },
+      { element: "Ti", frac: [0.5, 0.5, 0.5] },
+      { element: "O",  frac: [0.5, 0.5, 0] },
+      { element: "O",  frac: [0.5, 0, 0.5] },
+      { element: "O",  frac: [0, 0.5, 0.5] },
     ],
   },
 ];

@@ -101,14 +101,14 @@ arm64, side-loadable.
 
 ## 📥 Downloads
 
-All builds live on the [Releases page][download-url]. Latest is **v0.2.1**.
+All builds live on the [Releases page][download-url]. Latest is **v0.2.2**.
 
 | Platform | File | Size | Notes |
 | :--- | :--- | :---: | :--- |
-| 🪟 Windows (installer) | `Lattice_0.2.1_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
-| 🪟 Windows (MSI) | `Lattice_0.2.1_x64_en-US.msi` | 3.3 MB | For managed deployments |
+| 🪟 Windows (installer) | `Lattice_0.2.2_x64-setup.exe` | 2.3 MB | NSIS — **recommended** |
+| 🪟 Windows (MSI) | `Lattice_0.2.2_x64_en-US.msi` | 3.3 MB | For managed deployments |
 | 🪟 Windows (portable) | `Lattice.exe` | 9.3 MB | No installer, just run |
-| 🤖 Android (arm64) | `Lattice_0.2.1_arm64-release.apk` | 12 MB | Release build — enable "Install unknown apps" to side-load |
+| 🤖 Android (arm64) | `Lattice_0.2.2_arm64-release.apk` | 12 MB | Release build — enable "Install unknown apps" to side-load |
 | 🍎 macOS / 🐧 Linux | _coming soon_ | — | Build locally with `npm run tauri build` |
 
 ## ✨ Features
@@ -117,7 +117,7 @@ All builds live on the [Releases page][download-url]. Latest is **v0.2.1**.
 - 🌀 **Morph scrubber** — drag between two structures, watch atoms rearrange in real time
 - 🔳 **All lattice sites toggle** — render an atom at every equivalent site of the unit cell (all 8 corners, 6 face centers, etc.), so an FCC/BCC cube looks visually complete
 - 📱 **Mobile-tuned UI** — compact header on small screens, larger touch targets, safe-area-aware drawer + scrubber, dynamic viewport height (`dvh`) so the Android URL bar doesn't clip the canvas
-- 🧪 **10 built-in presets** — metals, covalent, ionic, compound solids
+- 🧪 **12 built-in presets** — metals, semiconductors, ionic, compound, perovskite
 - 📐 **Miller plane overlay** — visualise `(hkl)` planes against the unit cell
 - 🎨 **Element-aware colouring** from a built-in periodic-table dataset
 - 🌑 **NextChat-inspired dark UI** — responsive sidebar collapses to a mobile drawer
@@ -129,12 +129,14 @@ All builds live on the [Releases page][download-url]. Latest is **v0.2.1**.
 
 <table>
 <tr><th>Family</th><th>Structures</th></tr>
+<tr><td>⬜ Simple cubic</td><td>Reference cell (α-Po)</td></tr>
 <tr><td>🟦 BCC metals</td><td>Iron (α-Fe)</td></tr>
-<tr><td>🟩 FCC metals</td><td>Iron (γ-Fe), Copper, Gold</td></tr>
-<tr><td>⬜ Simple cubic</td><td>Reference cell</td></tr>
-<tr><td>💎 Covalent</td><td>Diamond</td></tr>
+<tr><td>🟩 FCC metals</td><td>Copper, Aluminum</td></tr>
+<tr><td>💎 Diamond cubic</td><td>Diamond (C), Silicon</td></tr>
 <tr><td>🧂 Ionic</td><td>Rock Salt (NaCl), Cesium Chloride (CsCl)</td></tr>
-<tr><td>⚗️ Compound</td><td>Zincblende (ZnS), Fluorite (CaF₂)</td></tr>
+<tr><td>⚗️ Zincblende</td><td>Zincblende (ZnS), Gallium Arsenide (GaAs)</td></tr>
+<tr><td>🧊 Fluorite</td><td>Fluorite (CaF₂)</td></tr>
+<tr><td>🔷 Perovskite</td><td>Strontium Titanate (SrTiO₃)</td></tr>
 </table>
 
 More land with every release. Open an [issue](https://github.com/hasnain7abbas/lattice/issues) if there's a structure you want next.
@@ -239,8 +241,10 @@ src-tauri/      # Rust backend, Tauri config, native bundles
 - [x] Android APK
 - [x] Web demo on GitHub Pages
 - [ ] Miller plane editor (custom `hkl` input)
-- [ ] HCP family (Mg, Zn, Ti)
-- [ ] Perovskite (CaTiO₃) and spinel structures
+- [x] Perovskite (SrTiO₃)
+- [ ] HCP family (Mg, Zn, Ti) — needs hexagonal-axis support
+- [ ] Wurtzite, graphite, rutile (non-cubic structures)
+- [ ] Spinel structures
 - [ ] iOS build via `tauri ios`
 - [ ] macOS + Linux installers via CI
 - [ ] Signed release-mode APK on the Play Store
@@ -248,6 +252,7 @@ src-tauri/      # Rust backend, Tauri config, native bundles
 
 ## 📰 What's New
 
+- 🚀 **v0.2.2** — preset gallery refresh for classroom use. Trimmed the redundant FCC roster down to one canonical metal and spent the slots on structure types students actually need to see: **Silicon** (diamond-cubic, the semiconductor archetype), **Aluminum** (a second FCC metal with very different chemistry), **Gallium Arsenide** (zincblende III-V), and **Strontium Titanate SrTiO₃** (the canonical ABO₃ perovskite). 12 presets across 8 distinct structure families, ordered from simple → complex.
 - 🚀 **v0.2.1** — visual polish + mobile scrubber fix. Atoms now ship with glossy clearcoat highlights and a soft additive rim halo (no more flat-coloured balls), bonds are ~40% thinner so the lattice geometry reads cleanly, and the morph scrubber no longer slides off-screen on phones (Framer Motion's transform was clobbering the centering translate).
 - 🚀 **v0.2.0** — mobile UI overhaul. New "All lattice sites" toggle (renders every equivalent corner/face atom of a unit cell), compact toolbar on phones, safe-area-aware drawer + scrubber, dynamic viewport height so the Android URL bar can't clip the 3D canvas. Release-signed Android APK + refreshed Windows installers.
 - 🌐 **Web demo** — same app, now runs in the browser via GitHub Pages

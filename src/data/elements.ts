@@ -19,6 +19,7 @@ export const ELEMENTS: Record<string, Element> = {
   Cl: { symbol: "Cl", name: "Chlorine",  radius: 0.70, color: "#7df96f" },
   K:  { symbol: "K",  name: "Potassium", radius: 1.05, color: "#a45cff" },
   Ca: { symbol: "Ca", name: "Calcium",   radius: 0.95, color: "#5cffb1" },
+  Sr: { symbol: "Sr", name: "Strontium", radius: 1.10, color: "#87d850" },
   Ti: { symbol: "Ti", name: "Titanium",  radius: 0.86, color: "#b5b8c6" },
   Cr: { symbol: "Cr", name: "Chromium",  radius: 0.78, color: "#8aa0c0" },
   Fe: { symbol: "Fe", name: "Iron",      radius: 0.78, color: "#ff8a4f" },
