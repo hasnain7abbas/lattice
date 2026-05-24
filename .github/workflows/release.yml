@@ -130,12 +130,16 @@ jobs:
         run: |
           mkdir -p artifacts
           VERSION=$(node -p "require('./package.json').version")
-          APK=$(find src-tauri/gen/android/app/build/outputs/apk -name "app-arm64-release.apk" | head -n1)
+          # --target aarch64 limits the Rust .so to arm64 but Gradle still
+          # names the bundle "universal". Accept either form, reject unsigned.
+          APK=$(find src-tauri/gen/android/app/build/outputs/apk -name "*release*.apk" \
+                ! -name "*unsigned*" | head -n1)
           if [ -z "$APK" ]; then
-            echo "::error::No arm64 release APK found"
+            echo "::error::No release APK found"
             find src-tauri/gen/android/app/build/outputs -type f
             exit 1
           fi
+          echo "Found APK: $APK"
           cp "$APK" "artifacts/Lattice_${VERSION}_arm64-release.apk"
           ls -la artifacts/
 
