@@ -99,6 +99,9 @@ jobs:
       - name: Initialize Android project (gen/android is gitignored)
         run: npm run android:init
 
+      - name: Apply customised app/build.gradle.kts (signing + minification)
+        run: cp scripts/android-app-build.gradle.kts src-tauri/gen/android/app/build.gradle.kts
+
       - name: Decode keystore + write keystore.properties
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -121,13 +124,13 @@ jobs:
           EOF
 
       - name: Build Android arm64 release APK
-        run: npm run android:apk
+        run: npx tauri android build --apk --target aarch64
 
       - name: Stage APK with versioned filename
         run: |
           mkdir -p artifacts
           VERSION=$(node -p "require('./package.json').version")
-          APK=$(find src-tauri/gen/android/app/build/outputs/apk -name "*arm64*release*.apk" | head -n1)
+          APK=$(find src-tauri/gen/android/app/build/outputs/apk -name "app-arm64-release.apk" | head -n1)
           if [ -z "$APK" ]; then
             echo "::error::No arm64 release APK found"
             find src-tauri/gen/android/app/build/outputs -type f
