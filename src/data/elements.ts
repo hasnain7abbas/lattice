@@ -20,9 +20,12 @@ export const ELEMENTS: Record<string, Element> = {
   K:  { symbol: "K",  name: "Potassium", radius: 1.05, color: "#a45cff" },
   Ca: { symbol: "Ca", name: "Calcium",   radius: 0.95, color: "#5cffb1" },
   Sr: { symbol: "Sr", name: "Strontium", radius: 1.10, color: "#87d850" },
-  Ti: { symbol: "Ti", name: "Titanium",  radius: 0.86, color: "#b5b8c6" },
-  Cr: { symbol: "Cr", name: "Chromium",  radius: 0.78, color: "#8aa0c0" },
-  Fe: { symbol: "Fe", name: "Iron",      radius: 0.78, color: "#ff8a4f" },
+  Ti: { symbol: "Ti", name: "Titanium",  radius: 0.84, color: "#b5b8c6" },
+  Cr: { symbol: "Cr", name: "Chromium",  radius: 0.80, color: "#7fb0e0" },
+  Mn: { symbol: "Mn", name: "Manganese", radius: 0.82, color: "#b15bd6" },
+  Fe: { symbol: "Fe", name: "Iron",      radius: 0.80, color: "#ff8a4f" },
+  Co: { symbol: "Co", name: "Cobalt",    radius: 0.78, color: "#3f6bd8" },
+  Ni: { symbol: "Ni", name: "Nickel",    radius: 0.77, color: "#5fc26b" },
   Cu: { symbol: "Cu", name: "Copper",    radius: 0.86, color: "#ff8050" },
   Zn: { symbol: "Zn", name: "Zinc",      radius: 0.88, color: "#88a0c0" },
   Ga: { symbol: "Ga", name: "Gallium",   radius: 0.80, color: "#c08070" },
@@ -30,6 +33,12 @@ export const ELEMENTS: Record<string, Element> = {
   As: { symbol: "As", name: "Arsenic",   radius: 0.74, color: "#bd80ff" },
   Cs: { symbol: "Cs", name: "Cesium",    radius: 1.40, color: "#9050d0" },
   Au: { symbol: "Au", name: "Gold",      radius: 0.92, color: "#ffd166" },
+  // A-site perovskite cations (large, ~12-coordinate). Visual radii scaled to ionic size.
+  Bi: { symbol: "Bi", name: "Bismuth",    radius: 1.16, color: "#e08fb4" },
+  La: { symbol: "La", name: "Lanthanum",  radius: 1.16, color: "#46e0c4" },
+  Nd: { symbol: "Nd", name: "Neodymium",  radius: 1.08, color: "#62d39e" },
+  Sm: { symbol: "Sm", name: "Samarium",   radius: 1.04, color: "#8fcf6e" },
+  Gd: { symbol: "Gd", name: "Gadolinium", radius: 1.02, color: "#b6cf52" },
 };
 
 export function getElement(symbol: string): Element {

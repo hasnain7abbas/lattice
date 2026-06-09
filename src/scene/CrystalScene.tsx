@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useScene } from "../stores/useScene";
 import { getPreset } from "../data/presets";
 import { buildSupercell, getLatticeVectors, lerpStructure, distance } from "../lib/crystal/lattice";
+import { derivePerovskite, applyPerovskiteDistortion } from "../lib/crystal/perovskite";
 import { AtomMesh } from "./primitives/Atom";
 import { Bond } from "./primitives/Bond";
 import { UnitCellWireframe } from "./primitives/UnitCellWireframe";
@@ -18,8 +19,9 @@ export function CrystalScene() {
   const showAllSites = useScene((s) => s.showAllSites);
   const selected = useScene((s) => s.selected);
   const select = useScene((s) => s.select);
+  const doping = useScene((s) => s.doping);
 
-  const structure = useMemo(() => {
+  const baseStructure = useMemo(() => {
     const cur = getPreset(currentId);
     if (!previousId || morph >= 1) return cur;
     const prev = getPreset(previousId);
@@ -28,11 +30,23 @@ export function CrystalScene() {
     return morph < 0.5 ? prev : cur;
   }, [currentId, previousId, morph]);
 
-  const lattice = useMemo(() => getLatticeVectors(structure), [structure]);
-  const atoms = useMemo(
-    () => buildSupercell(structure, supercell, showAllSites),
-    [structure, supercell, showAllSites],
+  // Resolve A/B-site doping into an effective (possibly resized) perovskite cell.
+  const derived = useMemo(
+    () => (baseStructure.perovskite ? derivePerovskite(baseStructure.perovskite, doping) : null),
+    [baseStructure, doping],
   );
+
+  const structure = useMemo(() => {
+    if (!derived) return baseStructure;
+    const a = derived.aPC;
+    return { ...baseStructure, params: { ...baseStructure.params, a, b: a, c: a } };
+  }, [baseStructure, derived]);
+
+  const lattice = useMemo(() => getLatticeVectors(structure), [structure]);
+  const atoms = useMemo(() => {
+    const built = buildSupercell(structure, supercell, showAllSites);
+    return derived ? applyPerovskiteDistortion(built, derived) : built;
+  }, [structure, supercell, showAllSites, derived]);
 
   // Center the whole scene so it sits at origin.
   const center: Vec3 = useMemo(() => {

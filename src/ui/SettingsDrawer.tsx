@@ -2,7 +2,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useScene } from "../stores/useScene";
 import { getPreset } from "../data/presets";
 import { paramsToVectors } from "../lib/crystal/lattice";
-import { X, Layers3, Sparkles, Box, Grid3x3 } from "lucide-react";
+import {
+  A_DOPANTS,
+  B_DOPANTS,
+  derivePerovskite,
+  type Dopant,
+} from "../lib/crystal/perovskite";
+import { X, Layers3, Sparkles, Box, Grid3x3, Atom, RotateCcw } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -74,6 +80,8 @@ function DrawerBody() {
 
   return (
     <>
+      {cur.perovskite && <DopingSection />}
+
       <Section icon={<Sparkles size={13} />} label="Lattice parameters">
         <div className="grid grid-cols-3 gap-2 mb-3">
           <Stat label="a" value={cur.params.a.toFixed(3)} />
@@ -134,6 +142,166 @@ function DrawerBody() {
         </div>
       </Section>
     </>
+  );
+}
+
+function DopingSection() {
+  const currentId = useScene((s) => s.currentId);
+  const doping = useScene((s) => s.doping);
+  const setADopant = useScene((s) => s.setADopant);
+  const setAFraction = useScene((s) => s.setAFraction);
+  const setBDopant = useScene((s) => s.setBDopant);
+  const setBFraction = useScene((s) => s.setBFraction);
+  const resetDoping = useScene((s) => s.resetDoping);
+
+  const cur = getPreset(currentId);
+  const tag = cur.perovskite!;
+  const d = derivePerovskite(tag, doping);
+
+  // Direction-of-change hints relative to the undoped host.
+  const tiltTrend =
+    d.tiltDeg > tag.baseTilt + 0.3 ? "↑ more tilted" : d.tiltDeg < tag.baseTilt - 0.3 ? "↓ less tilted" : "≈ host";
+
+  return (
+    <Section icon={<Atom size={13} />} label="Doping & distortion">
+      <div className="text-[12px] mb-3 leading-snug opacity-75" style={{ color: "var(--black)" }}>
+        Substitute cations on the <b>A-site</b> (large, replaces {tag.A}) or the{" "}
+        <b>B-site</b> (octahedral, replaces {tag.B}). Real ionic radii drive the
+        tolerance factor, cell size, octahedral tilt and polarization.
+      </div>
+
+      <DopantSelect
+        title={`A-site · replaces ${tag.A}`}
+        host={tag.A}
+        dopants={A_DOPANTS}
+        selected={doping.aDopant}
+        fraction={doping.xA}
+        onSelect={setADopant}
+        onFraction={setAFraction}
+      />
+      <DopantSelect
+        title={`B-site · replaces ${tag.B}`}
+        host={tag.B}
+        dopants={B_DOPANTS}
+        selected={doping.bDopant}
+        fraction={doping.xB}
+        onSelect={setBDopant}
+        onFraction={setBFraction}
+      />
+
+      {/* Live readout */}
+      <div
+        className="rounded-card px-3 py-2.5 mt-1 border"
+        style={{
+          borderColor: "var(--border-in-light)" as any,
+          borderWidth: 1,
+          borderStyle: "solid",
+          background: "var(--gray)",
+        }}
+      >
+        <div className="mono text-[13px] font-bold mb-1.5" style={{ color: "var(--primary)" }}>
+          {d.formula}
+        </div>
+        <Row label="Tolerance factor t" value={`${d.tolerance.toFixed(3)} (host ${d.hostTolerance.toFixed(3)})`} />
+        <Row label="Pseudo-cubic a" value={`${d.aPC.toFixed(3)} Å`} />
+        <Row label="Octahedral tilt" value={`${d.tiltDeg.toFixed(1)}° · ${tiltTrend}`} />
+        <Row label="Polarization" value={d.polar > 0.005 ? `polar (${(d.polar * 100).toFixed(0)}%)` : "non-polar"} />
+        <div
+          className="text-[11px] mt-2 pt-2 leading-snug border-t"
+          style={{ color: "var(--black)", borderColor: "var(--border-in-light)" as any, opacity: 0.85 }}
+        >
+          Predicted phase: <b style={{ color: "var(--primary)" }}>{d.phase}</b>
+        </div>
+      </div>
+
+      <button
+        onClick={resetDoping}
+        className="w-full h-9 rounded-card text-xs font-medium mt-2 border flex items-center justify-center gap-1.5"
+        style={{
+          background: "var(--white)",
+          color: "var(--black)",
+          borderColor: "var(--border-in-light)" as any,
+          borderWidth: 1,
+          borderStyle: "solid",
+        }}
+      >
+        <RotateCcw size={13} /> Reset to pure {cur.name.split(" ")[0]}
+      </button>
+    </Section>
+  );
+}
+
+function DopantSelect({
+  title,
+  host,
+  dopants,
+  selected,
+  fraction,
+  onSelect,
+  onFraction,
+}: {
+  title: string;
+  host: string;
+  dopants: Dopant[];
+  selected: string | null;
+  fraction: number;
+  onSelect: (s: string | null) => void;
+  onFraction: (x: number) => void;
+}) {
+  // Group dopants by category for the <optgroup>s.
+  const groups = dopants.reduce<Record<string, Dopant[]>>((acc, dp) => {
+    (acc[dp.category] ??= []).push(dp);
+    return acc;
+  }, {});
+  const pct = Math.round(fraction * 100);
+
+  return (
+    <div className="mb-3">
+      <div className="text-[10px] mono uppercase tracking-widest opacity-55 mb-1.5" style={{ color: "var(--black)" }}>
+        {title}
+      </div>
+      <select
+        value={selected ?? ""}
+        onChange={(e) => onSelect(e.target.value || null)}
+        className="w-full h-9 rounded-card px-2 text-xs border mono"
+        style={{
+          background: "var(--white)",
+          color: "var(--black)",
+          borderColor: (selected ? "var(--primary)" : "var(--border-in-light)") as any,
+          borderWidth: 1,
+          borderStyle: "solid",
+        }}
+      >
+        <option value="">None — pure {host}</option>
+        {Object.entries(groups).map(([cat, list]) => (
+          <optgroup key={cat} label={cat}>
+            {list.map((dp) => (
+              <option key={dp.symbol} value={dp.symbol}>
+                {dp.symbol} · {dp.name} ({dp.charge}, r={dp.ionic.toFixed(2)} Å)
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+      {selected && (
+        <div className="mt-2">
+          <div className="flex justify-between text-[10px] mono opacity-60 mb-1">
+            <span>{host}</span>
+            <span style={{ color: "var(--primary)", opacity: 1 }}>x = {(fraction).toFixed(2)} ({pct}%)</span>
+            <span>{selected}</span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={fraction}
+            onChange={(e) => onFraction(parseFloat(e.target.value))}
+            className="scrub w-full"
+          />
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -152,5 +152,13 @@ export function lerpStructure(a: Structure, b: Structure, t: number): Structure 
       ],
     };
   });
-  return { id: `${a.id}->${b.id}@${t.toFixed(2)}`, name: `${a.name} → ${b.name}`, blurb: "", params, basis };
+  // Carry the target's perovskite tag so doping/distortion still resolves mid-morph.
+  return {
+    id: `${a.id}->${b.id}@${t.toFixed(2)}`,
+    name: `${a.name} → ${b.name}`,
+    blurb: "",
+    params,
+    basis,
+    perovskite: b.perovskite,
+  };
 }

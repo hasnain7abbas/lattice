@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { PRESETS } from "../data/presets";
+import type { Doping } from "../lib/crystal/perovskite";
 
 type SceneState = {
   currentId: string;
@@ -20,6 +21,8 @@ type SceneState = {
   selected: string | null;
   /** Tap target during transitions, exposed for HUD */
   morphing: boolean;
+  /** A/B-site doping applied to perovskite structures (ignored by other lattices). */
+  doping: Doping;
   setStructure: (id: string) => void;
   setMorph: (v: number) => void;
   setSupercell: (n: [number, number, number]) => void;
@@ -27,6 +30,11 @@ type SceneState = {
   toggleBonds: () => void;
   toggleAllSites: () => void;
   select: (key: string | null) => void;
+  setADopant: (symbol: string | null) => void;
+  setAFraction: (x: number) => void;
+  setBDopant: (symbol: string | null) => void;
+  setBFraction: (x: number) => void;
+  resetDoping: () => void;
 };
 
 export const useScene = create<SceneState>()(
@@ -40,6 +48,7 @@ export const useScene = create<SceneState>()(
     showAllSites: true,
     selected: null,
     morphing: false,
+    doping: { aDopant: null, xA: 0.2, bDopant: null, xB: 0.2 },
     setStructure: (id) => {
       const { currentId } = get();
       if (id === currentId) return;
@@ -51,5 +60,12 @@ export const useScene = create<SceneState>()(
     toggleBonds: () => set((s) => ({ showBonds: !s.showBonds })),
     toggleAllSites: () => set((s) => ({ showAllSites: !s.showAllSites })),
     select: (key) => set({ selected: key }),
+    setADopant: (symbol) =>
+      set((s) => ({ doping: { ...s.doping, aDopant: symbol, xA: s.doping.xA || 0.2 } })),
+    setAFraction: (x) => set((s) => ({ doping: { ...s.doping, xA: Math.max(0, Math.min(1, x)) } })),
+    setBDopant: (symbol) =>
+      set((s) => ({ doping: { ...s.doping, bDopant: symbol, xB: s.doping.xB || 0.2 } })),
+    setBFraction: (x) => set((s) => ({ doping: { ...s.doping, xB: Math.max(0, Math.min(1, x)) } })),
+    resetDoping: () => set({ doping: { aDopant: null, xA: 0.2, bDopant: null, xB: 0.2 } }),
   })),
 );

@@ -166,6 +166,24 @@ export const PRESETS: Structure[] = [
       { element: "O",  frac: [0.5, 0, 0.5] },
       { element: "O",  frac: [0, 0.5, 0.5] },
     ],
+    // Tolerance factor ≈ 1 → cubic, untilted, non-polar host. Dopable A=Sr, B=Ti.
+    perovskite: { A: "Sr", B: "Ti", X: "O", baseA: 3.905, basePolar: 0, baseTilt: 0 },
+  },
+  {
+    id: "bfo",
+    name: "Bismuth Ferrite (BiFeO₃)",
+    blurb:
+      "BFO — a room-temperature multiferroic. Rhombohedrally distorted (R3c) ABO₃ perovskite: Bi³⁺ on the A-site, Fe³⁺ in tilted FeO₆ octahedra, polar along [111]. Dope the A or B site to watch the distortion change.",
+    params: cubic(3.965),
+    basis: [
+      { element: "Bi", frac: [0, 0, 0] },
+      { element: "Fe", frac: [0.5, 0.5, 0.5] },
+      { element: "O",  frac: [0.5, 0.5, 0] },
+      { element: "O",  frac: [0.5, 0, 0.5] },
+      { element: "O",  frac: [0, 0.5, 0.5] },
+    ],
+    // Host BFO: large rhombohedral tilt + strong Bi lone-pair polarization.
+    perovskite: { A: "Bi", B: "Fe", X: "O", baseA: 3.965, basePolar: 0.08, baseTilt: 12 },
   },
 ];
 
