@@ -3,6 +3,7 @@ import { Viewport } from "../scene/Viewport";
 import { Sidebar } from "../ui/Sidebar";
 import { WindowHeader } from "../ui/WindowHeader";
 import { MorphScrubber } from "../ui/MorphScrubber";
+import { PerovskiteHUD } from "../ui/PerovskiteHUD";
 import { SettingsDrawer } from "../ui/SettingsDrawer";
 import { LoadingScreen } from "../ui/LoadingScreen";
 
@@ -42,6 +43,7 @@ export function App() {
           <WindowHeader onOpenSidebar={() => setSidebarOpen(true)} />
           <div className="relative flex-1 min-h-0">
             <Viewport />
+            <PerovskiteHUD />
             <MorphScrubber />
             <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
           </div>

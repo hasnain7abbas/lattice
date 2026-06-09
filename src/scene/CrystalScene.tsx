@@ -5,6 +5,7 @@ import { buildSupercell, getLatticeVectors, lerpStructure, distance } from "../l
 import { derivePerovskite, applyPerovskiteDistortion } from "../lib/crystal/perovskite";
 import { AtomMesh } from "./primitives/Atom";
 import { Bond } from "./primitives/Bond";
+import { OctahedronMesh } from "./primitives/Octahedron";
 import { UnitCellWireframe } from "./primitives/UnitCellWireframe";
 import type { Vec3 } from "../lib/crystal/types";
 import { getElement } from "../data/elements";
@@ -17,6 +18,7 @@ export function CrystalScene() {
   const showCell = useScene((s) => s.showCell);
   const showBonds = useScene((s) => s.showBonds);
   const showAllSites = useScene((s) => s.showAllSites);
+  const showOctahedra = useScene((s) => s.showOctahedra);
   const selected = useScene((s) => s.selected);
   const select = useScene((s) => s.select);
   const doping = useScene((s) => s.doping);
@@ -39,7 +41,11 @@ export function CrystalScene() {
   const structure = useMemo(() => {
     if (!derived) return baseStructure;
     const a = derived.aPC;
-    return { ...baseStructure, params: { ...baseStructure.params, a, b: a, c: a } };
+    const ang = derived.cellAngle; // rhombohedral shear (90° = cubic)
+    return {
+      ...baseStructure,
+      params: { ...baseStructure.params, a, b: a, c: a, alpha: ang, beta: ang, gamma: ang },
+    };
   }, [baseStructure, derived]);
 
   const lattice = useMemo(() => getLatticeVectors(structure), [structure]);
@@ -47,6 +53,26 @@ export function CrystalScene() {
     const built = buildSupercell(structure, supercell, showAllSites);
     return derived ? applyPerovskiteDistortion(built, derived) : built;
   }, [structure, supercell, showAllSites, derived]);
+
+  // BO₆ coordination octahedra (perovskites only) — drawn so tilting is visible.
+  const octahedra = useMemo(() => {
+    if (!derived || !showOctahedra) return [];
+    const reach = derived.aPC * 0.85;
+    const bAtoms = atoms.filter((a) => a.element === derived.B || a.element === derived.bDopant);
+    const oAtoms = atoms.filter((a) => a.element === derived.X);
+    const out: { vertices: Vec3[]; element: string; key: string }[] = [];
+    for (const b of bAtoms) {
+      const near = oAtoms
+        .map((o) => ({ p: o.position, d: distance(b.position, o.position) }))
+        .filter((x) => x.d <= reach)
+        .sort((x, y) => x.d - y.d)
+        .slice(0, 6);
+      if (near.length >= 4) {
+        out.push({ vertices: near.map((x) => x.p), element: b.element, key: b.key });
+      }
+    }
+    return out.slice(0, 220);
+  }, [atoms, derived, showOctahedra]);
 
   // Center the whole scene so it sits at origin.
   const center: Vec3 = useMemo(() => {
@@ -87,6 +113,9 @@ export function CrystalScene() {
   return (
     <group position={[-center[0], -center[1], -center[2]]}>
       {showCell && <UnitCellWireframe lattice={lattice} n={supercell} />}
+      {octahedra.map((o) => (
+        <OctahedronMesh key={o.key} vertices={o.vertices} element={o.element} />
+      ))}
       {atoms.map((a) => (
         <AtomMesh
           key={a.key}

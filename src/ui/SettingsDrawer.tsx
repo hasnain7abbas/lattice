@@ -66,9 +66,11 @@ function DrawerBody() {
   const showCell = useScene((s) => s.showCell);
   const showBonds = useScene((s) => s.showBonds);
   const showAllSites = useScene((s) => s.showAllSites);
+  const showOctahedra = useScene((s) => s.showOctahedra);
   const toggleCell = useScene((s) => s.toggleCell);
   const toggleBonds = useScene((s) => s.toggleBonds);
   const toggleAllSites = useScene((s) => s.toggleAllSites);
+  const toggleOctahedra = useScene((s) => s.toggleOctahedra);
   const cur = getPreset(currentId);
   const L = paramsToVectors(cur.params);
   const det =
@@ -117,6 +119,23 @@ function DrawerBody() {
           <Toggle on={showCell} onClick={toggleCell} label="Cell" />
           <Toggle on={showBonds} onClick={toggleBonds} label="Bonds" />
         </div>
+        {cur.perovskite && (
+          <button
+            onClick={toggleOctahedra}
+            className="w-full h-10 rounded-card text-xs font-medium transition-colors border flex items-center justify-center gap-2 px-2 mb-2"
+            style={{
+              background: showOctahedra ? "var(--primary-soft)" : "var(--white)",
+              color: showOctahedra ? "var(--primary)" : "var(--black)",
+              borderColor: (showOctahedra ? "var(--primary)" : "var(--border-in-light)") as any,
+              borderWidth: 1,
+              borderStyle: "solid",
+            }}
+            title="Draw the BO₆ coordination octahedra so their tilt is visible"
+          >
+            <Box size={13} />
+            {cur.perovskite.B}O₆ octahedra
+          </button>
+        )}
         <button
           onClick={toggleAllSites}
           className="w-full h-10 rounded-card text-xs font-medium transition-colors border flex items-center justify-center gap-2 px-2"
@@ -204,6 +223,7 @@ function DopingSection() {
         </div>
         <Row label="Tolerance factor t" value={`${d.tolerance.toFixed(3)} (host ${d.hostTolerance.toFixed(3)})`} />
         <Row label="Pseudo-cubic a" value={`${d.aPC.toFixed(3)} Å`} />
+        <Row label="Cell angle α=β=γ" value={`${d.cellAngle.toFixed(1)}° ${d.cellAngle < 89.9 ? "(rhombohedral)" : "(cubic)"}`} />
         <Row label="Octahedral tilt" value={`${d.tiltDeg.toFixed(1)}° · ${tiltTrend}`} />
         <Row label="Polarization" value={d.polar > 0.005 ? `polar (${(d.polar * 100).toFixed(0)}%)` : "non-polar"} />
         <div

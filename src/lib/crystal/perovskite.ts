@@ -102,8 +102,12 @@ export type PerovskiteDerived = {
   hostTolerance: number;
   /** Pseudo-cubic lattice parameter (Å). */
   aPC: number;
-  /** Octahedral antiphase tilt magnitude (degrees). */
+  /** Octahedral antiphase tilt magnitude (degrees, physical-ish). */
   tiltDeg: number;
+  /** Tilt actually rendered (exaggerated so it is legible). */
+  renderTilt: number;
+  /** Rhombohedral cell angle α=β=γ rendered (deg). 90 = cubic. */
+  cellAngle: number;
   /** Ferroelectric cation displacement along [111], fractional. */
   polar: number;
   /** Human-readable formula, e.g. "Bi₀.₈₀La₀.₂₀FeO₃". */
@@ -111,6 +115,9 @@ export type PerovskiteDerived = {
   /** Predicted symmetry/phase label. */
   phase: string;
 };
+
+/** Geometry in the 3D view is exaggerated by this factor so distortions read clearly. */
+export const CLARITY_EXAGGERATION = 1.6;
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -158,6 +165,10 @@ export function derivePerovskite(tag: PerovskiteTag, dop: Doping): PerovskiteDer
 
   // Lower tolerance → bigger octahedral tilt; higher → tips toward cubic.
   const tiltDeg = clamp(tag.baseTilt + 160 * (hostTolerance - tolerance), 0, 22);
+  // Exaggerated values used purely for the 3D render so the eye can see them.
+  const renderTilt = clamp(tiltDeg * CLARITY_EXAGGERATION, 0, 32);
+  // Octahedral tilting shears the cell into a rhombohedron (α=β=γ < 90°).
+  const cellAngle = 90 - clamp(renderTilt * 0.55, 0, 16);
 
   // A-site (rare-earth / alkaline-earth) substitution suppresses the Bi lone-pair
   // ferroelectric displacement; B-site doping dilutes it more weakly.
@@ -175,10 +186,79 @@ export function derivePerovskite(tag: PerovskiteTag, dop: Doping): PerovskiteDer
     A: tag.A, B: tag.B, X: tag.X,
     aDopant: dop.aDopant, xA: dop.xA,
     bDopant: dop.bDopant, xB: dop.xB,
-    rA, rB, tolerance, hostTolerance, aPC, tiltDeg, polar,
+    rA, rB, tolerance, hostTolerance, aPC, tiltDeg, renderTilt, cellAngle, polar,
     formula,
     phase: classifyPhase(tolerance, tiltDeg, polar),
   };
+}
+
+const fmt = (n: number, p = 2) => n.toFixed(p);
+
+/**
+ * A plain-language, live cause → effect explanation of the current doping:
+ * which cation went where, how its size moves the tolerance factor, and what
+ * that does to the octahedra / cell. Drives the on-screen teaching label.
+ */
+export function explainDoping(tag: PerovskiteTag, dop: Doping, d: PerovskiteDerived): string[] {
+  const lines: string[] = [];
+  const rA0 = IONIC_RADII[tag.A] ?? 1.3;
+  const rB0 = IONIC_RADII[tag.B] ?? 0.64;
+  const aDoped = dop.aDopant && dop.xA > 0.005;
+  const bDoped = dop.bDopant && dop.xB > 0.005;
+
+  if (!aDoped && !bDoped) {
+    if (tag.basePolar > 0 || tag.baseTilt > 0) {
+      lines.push(
+        `Pure ${tag.A}${tag.B}${tag.X}₃: the ${tag.A}³⁺ lone pair pushes the cations off-centre along [111] — it is ferroelectric.`,
+      );
+      lines.push(
+        `The ${tag.B}${tag.X}₆ octahedra tilt ≈${fmt(d.tiltDeg, 0)}° in antiphase, shearing the cell into a rhombohedron (R3c).`,
+      );
+    } else {
+      lines.push(
+        `Pure ${tag.A}${tag.B}${tag.X}₃: tolerance factor t ≈ ${fmt(d.tolerance, 3)} ≈ 1, so the ${tag.B}${tag.X}₆ octahedra sit untilted — a cubic perovskite.`,
+      );
+    }
+    return lines;
+  }
+
+  if (aDoped) {
+    const r = IONIC_RADII[dop.aDopant!] ?? rA0;
+    const diff = r - rA0;
+    const size = Math.abs(diff) < 0.01 ? "almost the same size as" : diff > 0 ? "larger than" : "smaller than";
+    const tDir = d.tolerance > d.hostTolerance + 0.0005 ? "rises" : d.tolerance < d.hostTolerance - 0.0005 ? "falls" : "barely moves";
+    const geo =
+      d.tolerance > d.hostTolerance + 0.0005
+        ? "the octahedra straighten and the cell relaxes toward cubic"
+        : d.tolerance < d.hostTolerance - 0.0005
+          ? "the octahedra tilt further and the cell becomes more rhombohedral"
+          : "the tilt is largely unchanged";
+    lines.push(
+      `A-site (${tag.A} → ${dop.aDopant}): ${dop.aDopant} (r=${fmt(r)} Å) is ${size} ${tag.A}³⁺ (r=${fmt(rA0)} Å).`,
+    );
+    lines.push(`→ tolerance t ${tDir} (${fmt(d.hostTolerance, 3)} → ${fmt(d.tolerance, 3)}); ${geo}.`);
+    if (tag.basePolar > 0) {
+      lines.push(
+        d.polar > 0.005
+          ? `→ replacing ${tag.A} dilutes the lone pair, so the polarization weakens.`
+          : `→ the ${tag.A} lone pair is fully diluted: polarization is switched off.`,
+      );
+    }
+  }
+
+  if (bDoped) {
+    const r = IONIC_RADII[dop.bDopant!] ?? rB0;
+    const diff = r - rB0;
+    const size = Math.abs(diff) < 0.01 ? "about the same size as" : diff > 0 ? "larger than" : "smaller than";
+    lines.push(
+      `B-site (${tag.B} → ${dop.bDopant}): ${dop.bDopant} (r=${fmt(r)} Å) is ${size} ${tag.B}³⁺ (r=${fmt(rB0)} Å), resizing the ${tag.B}${tag.X}₆ octahedron.`,
+    );
+    lines.push(
+      `→ the cell ${d.aPC < tag.baseA - 0.002 ? "contracts" : d.aPC > tag.baseA + 0.002 ? "expands" : "holds"} (a = ${fmt(d.aPC, 3)} Å) and t shifts toward ${fmt(d.tolerance, 3)}.`,
+    );
+  }
+
+  return lines;
 }
 
 /** Deterministic 0..1 hash so a given site keeps its dopant identity across rebuilds. */
@@ -236,10 +316,10 @@ export function applyPerovskiteDistortion(
   const isX = (el: string) => el === d.X;
 
   // --- 1. octahedral tilt (rotate oxygens about nearest B center) ---
-  if (d.tiltDeg > 0.05) {
+  if (d.renderTilt > 0.05) {
     const bAtoms = atoms.filter((at) => isB(at.element));
     const k: Vec3 = [1 / Math.sqrt(3), 1 / Math.sqrt(3), 1 / Math.sqrt(3)];
-    const reach = a * 0.78; // B–O ≈ a/2; anything beyond ¾·a is not this octahedron
+    const reach = a * 0.85; // B–O ≈ a/2; anything beyond is not this octahedron
     for (const o of atoms) {
       if (!isX(o.element)) continue;
       // nearest B center
@@ -251,7 +331,7 @@ export function applyPerovskiteDistortion(
       }
       if (!best || bestD > reach) continue;
       const sign = cellParity(best.key) === 0 ? 1 : -1;
-      const theta = (sign * d.tiltDeg * Math.PI) / 180;
+      const theta = (sign * d.renderTilt * Math.PI) / 180;
       const cos = Math.cos(theta), sin = Math.sin(theta);
       const c = best.position;
       const v: Vec3 = [o.position[0] - c[0], o.position[1] - c[1], o.position[2] - c[2]];

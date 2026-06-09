@@ -17,6 +17,8 @@ type SceneState = {
   /** Mirror atoms across every equivalent lattice site of the unit cell
    *  (e.g. all 8 corners of a cube, both ends of edges/faces). */
   showAllSites: boolean;
+  /** Draw BO₆ coordination octahedra for perovskites (makes tilting visible) */
+  showOctahedra: boolean;
   /** Selected atom key */
   selected: string | null;
   /** Tap target during transitions, exposed for HUD */
@@ -29,6 +31,7 @@ type SceneState = {
   toggleCell: () => void;
   toggleBonds: () => void;
   toggleAllSites: () => void;
+  toggleOctahedra: () => void;
   select: (key: string | null) => void;
   setADopant: (symbol: string | null) => void;
   setAFraction: (x: number) => void;
@@ -46,19 +49,28 @@ export const useScene = create<SceneState>()(
     showCell: true,
     showBonds: true,
     showAllSites: true,
+    showOctahedra: true,
     selected: null,
     morphing: false,
     doping: { aDopant: null, xA: 0.2, bDopant: null, xB: 0.2 },
     setStructure: (id) => {
       const { currentId } = get();
       if (id === currentId) return;
-      set({ previousId: currentId, currentId: id, morph: 0, morphing: true });
+      // Each structure starts undoped so it reads as its pure phase.
+      set({
+        previousId: currentId,
+        currentId: id,
+        morph: 0,
+        morphing: true,
+        doping: { aDopant: null, xA: 0.2, bDopant: null, xB: 0.2 },
+      });
     },
     setMorph: (v) => set({ morph: Math.max(0, Math.min(1, v)), morphing: v < 1 }),
     setSupercell: (n) => set({ supercell: n }),
     toggleCell: () => set((s) => ({ showCell: !s.showCell })),
     toggleBonds: () => set((s) => ({ showBonds: !s.showBonds })),
     toggleAllSites: () => set((s) => ({ showAllSites: !s.showAllSites })),
+    toggleOctahedra: () => set((s) => ({ showOctahedra: !s.showOctahedra })),
     select: (key) => set({ selected: key }),
     setADopant: (symbol) =>
       set((s) => ({ doping: { ...s.doping, aDopant: symbol, xA: s.doping.xA || 0.2 } })),
