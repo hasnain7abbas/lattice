@@ -71,8 +71,21 @@ function DrawerBody() {
   const toggleBonds = useScene((s) => s.toggleBonds);
   const toggleAllSites = useScene((s) => s.toggleAllSites);
   const toggleOctahedra = useScene((s) => s.toggleOctahedra);
+  const doping = useScene((s) => s.doping);
   const cur = getPreset(currentId);
-  const L = paramsToVectors(cur.params);
+  const derived = cur.perovskite ? derivePerovskite(cur.perovskite, doping) : null;
+  const effectiveParams = derived
+    ? {
+        ...cur.params,
+        a: derived.aPC,
+        b: derived.aPC,
+        c: derived.aPC,
+        alpha: derived.cellAngle,
+        beta: derived.cellAngle,
+        gamma: derived.cellAngle,
+      }
+    : cur.params;
+  const L = paramsToVectors(effectiveParams);
   const det =
     L.a[0] * (L.b[1] * L.c[2] - L.b[2] * L.c[1]) -
     L.a[1] * (L.b[0] * L.c[2] - L.b[2] * L.c[0]) +
@@ -86,14 +99,19 @@ function DrawerBody() {
 
       <Section icon={<Sparkles size={13} />} label="Lattice parameters">
         <div className="grid grid-cols-3 gap-2 mb-3">
-          <Stat label="a" value={cur.params.a.toFixed(3)} />
-          <Stat label="b" value={cur.params.b.toFixed(3)} />
-          <Stat label="c" value={cur.params.c.toFixed(3)} />
-          <Stat label="α" value={cur.params.alpha.toFixed(1) + "°"} />
-          <Stat label="β" value={cur.params.beta.toFixed(1) + "°"} />
-          <Stat label="γ" value={cur.params.gamma.toFixed(1) + "°"} />
+          <Stat label="a" value={effectiveParams.a.toFixed(3)} />
+          <Stat label="b" value={effectiveParams.b.toFixed(3)} />
+          <Stat label="c" value={effectiveParams.c.toFixed(3)} />
+          <Stat label="α" value={effectiveParams.alpha.toFixed(1) + "°"} />
+          <Stat label="β" value={effectiveParams.beta.toFixed(1) + "°"} />
+          <Stat label="γ" value={effectiveParams.gamma.toFixed(1) + "°"} />
         </div>
         <Row label="Cell volume" value={`${volume.toFixed(2)} Å³`} />
+        {derived && (
+          <div className="text-[10px] mt-1 leading-snug opacity-60" style={{ color: "var(--black)" }}>
+            Effective visualization cell after doping; not a refined diffraction structure.
+          </div>
+        )}
       </Section>
 
       <Section icon={<Layers3 size={13} />} label={`Supercell · ${n}×${n}×${n}`}>
@@ -192,7 +210,7 @@ function DopingSection() {
       <DopantSelect
         title={`A-site · replaces ${tag.A}`}
         host={tag.A}
-        dopants={A_DOPANTS}
+        dopants={A_DOPANTS.filter((dp) => dp.symbol !== tag.A)}
         selected={doping.aDopant}
         fraction={doping.xA}
         onSelect={setADopant}
@@ -201,7 +219,7 @@ function DopingSection() {
       <DopantSelect
         title={`B-site · replaces ${tag.B}`}
         host={tag.B}
-        dopants={B_DOPANTS}
+        dopants={B_DOPANTS.filter((dp) => dp.symbol !== tag.B)}
         selected={doping.bDopant}
         fraction={doping.xB}
         onSelect={setBDopant}
@@ -223,15 +241,20 @@ function DopingSection() {
         </div>
         <Row label="Tolerance factor t" value={`${d.tolerance.toFixed(3)} (host ${d.hostTolerance.toFixed(3)})`} />
         <Row label="Pseudo-cubic a" value={`${d.aPC.toFixed(3)} Å`} />
-        <Row label="Cell angle α=β=γ" value={`${d.cellAngle.toFixed(1)}° ${d.cellAngle < 89.9 ? "(rhombohedral)" : "(cubic)"}`} />
+        <Row label="Rendered cell angle" value={`${d.cellAngle.toFixed(1)}° ${d.cellAngle < 89.9 ? "(rhombohedral)" : "(cubic)"}`} />
         <Row label="Octahedral tilt" value={`${d.tiltDeg.toFixed(1)}° · ${tiltTrend}`} />
         <Row label="Polarization" value={d.polar > 0.005 ? `polar (${(d.polar * 100).toFixed(0)}%)` : "non-polar"} />
         <div
           className="text-[11px] mt-2 pt-2 leading-snug border-t"
           style={{ color: "var(--black)", borderColor: "var(--border-in-light)" as any, opacity: 0.85 }}
         >
-          Predicted phase: <b style={{ color: "var(--primary)" }}>{d.phase}</b>
+          Model estimate: <b style={{ color: "var(--primary)" }}>{d.phase}</b>
         </div>
+      </div>
+      <div className="text-[10px] mt-2 leading-snug opacity-65" style={{ color: "var(--black)" }}>
+        Ionic-radius trends are qualitative. Sr²⁺, Ti⁴⁺ and Ni²⁺ also require charge
+        compensation (vacancies or mixed valence), which this geometry-only model
+        does not calculate. Small supercells show the nearest discrete dopant count.
       </div>
 
       <button

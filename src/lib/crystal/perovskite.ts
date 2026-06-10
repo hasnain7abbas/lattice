@@ -106,7 +106,7 @@ export type PerovskiteDerived = {
   tiltDeg: number;
   /** Tilt actually rendered (exaggerated so it is legible). */
   renderTilt: number;
-  /** Rhombohedral cell angle α=β=γ rendered (deg). 90 = cubic. */
+  /** Visualization cell angle α=β=γ (deg). 90 = cubic. */
   cellAngle: number;
   /** Ferroelectric cation displacement along [111], fractional. */
   polar: number;
@@ -167,8 +167,10 @@ export function derivePerovskite(tag: PerovskiteTag, dop: Doping): PerovskiteDer
   const tiltDeg = clamp(tag.baseTilt + 160 * (hostTolerance - tolerance), 0, 22);
   // Exaggerated values used purely for the 3D render so the eye can see them.
   const renderTilt = clamp(tiltDeg * CLARITY_EXAGGERATION, 0, 32);
-  // Octahedral tilting shears the cell into a rhombohedron (α=β=γ < 90°).
-  const cellAngle = 90 - clamp(renderTilt * 0.55, 0, 16);
+  // Keep the cell shear illustrative rather than claiming a refined lattice.
+  // The octahedra carry most of the visible tilt; a large shear (for example
+  // 79° for pure BFO) would be crystallographically misleading.
+  const cellAngle = 90 - clamp(renderTilt * 0.055, 0, 2);
 
   // A-site (rare-earth / alkaline-earth) substitution suppresses the Bi lone-pair
   // ferroelectric displacement; B-site doping dilutes it more weakly.
@@ -277,6 +279,17 @@ function siteKey(key: string): string {
   return i === -1 ? key : key.slice(0, i);
 }
 
+function selectedSites(atoms: Atom[], element: string, fraction: number, prefix: string): Set<string> {
+  const keys = [...new Set(
+    atoms
+      .filter((at) => at.element === element)
+      .map((at) => siteKey(at.key)),
+  )];
+  const count = Math.round(clamp(fraction, 0, 1) * keys.length);
+  keys.sort((a, b) => hash01(`${prefix}:${a}`) - hash01(`${prefix}:${b}`));
+  return new Set(keys.slice(0, count));
+}
+
 /** Parse the cell index (i+j+k) out of an atom key "bi-i-j-k[-img...]". */
 function cellParity(key: string): number {
   const base = siteKey(key);
@@ -360,12 +373,16 @@ export function applyPerovskiteDistortion(
     }
   }
 
-  // --- 3. solid-solution substitution (relabel a fraction of sites) ---
+  // --- 3. solid-solution substitution (relabel the nearest possible fraction) ---
+  const aSites =
+    d.aDopant && d.xA > 0 ? selectedSites(atoms, d.A, d.xA, "A") : new Set<string>();
+  const bSites =
+    d.bDopant && d.xB > 0 ? selectedSites(atoms, d.B, d.xB, "B") : new Set<string>();
   for (const at of atoms) {
-    if (d.aDopant && d.xA > 0 && isA(at.element)) {
-      if (hash01("A:" + siteKey(at.key)) < d.xA) at.element = d.aDopant;
-    } else if (d.bDopant && d.xB > 0 && isB(at.element)) {
-      if (hash01("B:" + siteKey(at.key)) < d.xB) at.element = d.bDopant;
+    if (d.aDopant && isA(at.element) && aSites.has(siteKey(at.key))) {
+      at.element = d.aDopant;
+    } else if (d.bDopant && isB(at.element) && bSites.has(siteKey(at.key))) {
+      at.element = d.bDopant;
     }
   }
 

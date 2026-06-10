@@ -6,7 +6,7 @@ import { derivePerovskite, explainDoping } from "../lib/crystal/perovskite";
 
 /**
  * On-canvas teaching label for perovskites. Shows the live formula, the
- * predicted phase, and a plain-language cause → effect note explaining how the
+ * model-estimated phase, and a plain-language cause → effect note explaining how the
  * chosen dopant distorts the geometry. This is the "what am I looking at?"
  * annotation that turns the 3D distortion into something you can read.
  */
@@ -74,7 +74,7 @@ export function PerovskiteHUD() {
         </div>
 
         <div className="text-[9px] mono mt-1.5 leading-snug" style={{ color: "var(--black)", opacity: 0.45 }}>
-          Tilt & cell shear exaggerated ~1.6× for clarity.
+          Octahedral tilt exaggerated ~1.6×; cell shear is illustrative.
         </div>
       </motion.div>
     </AnimatePresence>
